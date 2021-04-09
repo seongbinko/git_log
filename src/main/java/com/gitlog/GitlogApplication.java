@@ -9,5 +9,5 @@ public class GitlogApplication {
     public static void main(String[] args) {
         SpringApplication.run(GitlogApplication.class, args);
     }
-
+    //최재성입니다
 }
