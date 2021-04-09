@@ -12,15 +12,13 @@ import java.util.List;
 @Builder
 @NoArgsConstructor(access = AccessLevel.PROTECTED) // protected로 기본생성자 생성
 @AllArgsConstructor
-@ToString(of = {"id", "title", "content", "imgUrl"})
+@ToString(of = {"id", "content", "imgUrl"})
 public class Post extends BaseEntity{
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "post_id")
     private Long id;
-
-    private String title;
 
     private String content;
 

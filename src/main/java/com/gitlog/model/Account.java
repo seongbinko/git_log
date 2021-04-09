@@ -12,7 +12,8 @@ import java.util.List;
 @Builder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)// protected로 기본생성자 생성
 @AllArgsConstructor
-@ToString(of = {"id", "nickname", "email"})
+@ToString(of = {"id", "nickname", "email", "bio", "imgUrl", "githubUrl"})
+//password, bio, github_url, img_url
 public class Account extends BaseTimeEntity {
 
     @Id
@@ -20,9 +21,17 @@ public class Account extends BaseTimeEntity {
     @Column(name = "account_id")
     private Long id;
 
+    private String password;
+
     private String nickname;
 
     private String email;
+
+    private String bio;
+
+    private String imgUrl;
+
+    private String githubUrl;
 
     @ElementCollection(fetch = FetchType.EAGER)
     @Builder.Default
