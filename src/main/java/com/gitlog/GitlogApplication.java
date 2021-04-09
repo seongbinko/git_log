@@ -10,4 +10,5 @@ public class GitlogApplication {
         SpringApplication.run(GitlogApplication.class, args);
     }
     //최재성입니다
+    //윤현동입니다.
 }
