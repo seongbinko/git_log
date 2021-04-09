@@ -5,5 +5,5 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class AccountRegisterRequestDto {
+public class AccountRequestDto {
 }
