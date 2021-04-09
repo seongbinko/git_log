@@ -1,7 +1,7 @@
 package com.gitlog.repository;
 
-import com.gitlog.model.User;
+import com.gitlog.model.Account;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface UserRegisterRepository extends JpaRepository<User, Long> {
+public interface UserRegisterRepository extends JpaRepository<Account, Long> {
 }
