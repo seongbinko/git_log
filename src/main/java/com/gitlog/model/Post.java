@@ -1,5 +1,6 @@
 package com.gitlog.model;
 
+import com.gitlog.dto.PostRequestDto;
 import lombok.*;
 
 import javax.persistence.*;
@@ -37,4 +38,14 @@ public class Post extends BaseEntity{
     @Builder.Default
     // @JsonIgnore entity를 직접 노출할 경우 필요
     List<Heart> hearts = new ArrayList<>();
+
+    public Post(String content, String imgUrl){
+        this.content = content;
+        this.imgUrl = imgUrl;
+    }
+
+    public void update(PostRequestDto postRequestDto){
+        this.content = postRequestDto.getContent();
+        this.imgUrl = postRequestDto.getImgUrl();
+    }
 }

@@ -9,8 +9,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.HttpStatusCodeException;
 
-import javax.servlet.http.HttpServletResponse;
 import java.util.Optional;
 
 @RequiredArgsConstructor
@@ -19,13 +19,24 @@ public class AccountService {
     private final AccountRepository accountRepository;
     private final PasswordEncoder passwordEncoder;
 
-    public String email_check(AccountRequestDto accountRequestDto){
+    public int isDuplicateEmail(AccountRequestDto accountRequestDto){
         String email = accountRequestDto.getEmail();
         Optional<Account> found = accountRepository.findByEmail(email);
         if (found.isPresent()){
-            throw new IllegalArgumentException("이미 존재하는 이메일입니다.");
+            return 1;
         }
-        return null;
+        else {
+            return 0;
+        }
+    }
+
+    public int nickname_check(AccountRequestDto accountRequestDto){
+        String nickname = accountRequestDto.getNickname();
+        Optional<Account> found = accountRepository.findByNickname(nickname);
+        if (found.isPresent()){
+            return 1;
+        }
+        return 0;
     }
 
     //사용자 추

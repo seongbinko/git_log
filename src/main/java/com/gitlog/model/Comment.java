@@ -1,5 +1,6 @@
 package com.gitlog.model;
 
+import com.gitlog.dto.PostRequestDto;
 import lombok.*;
 
 import javax.persistence.*;
@@ -27,4 +28,5 @@ public class Comment extends BaseTimeEntity{
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "post_id")
     private Post post;
+
 }
