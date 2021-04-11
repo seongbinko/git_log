@@ -15,6 +15,7 @@ import java.util.List;
 public class PostController {
     private final PostService postService;
 
+    //게시글 가져오기
     @GetMapping("/api/posts")
     public Page<Post> getComment(@RequestParam("page") int page,
                                  @RequestParam("size") int size){
@@ -22,13 +23,22 @@ public class PostController {
         return postService.getPost(page,size);
 
     }
-    @PostMapping("/api/post")
+
+    //게시글 작성
+    @PostMapping("/api/posts")
     public void writeComment(@RequestBody PostRequestDto postRequestDto){
         postService.createPost(postRequestDto);
     }
-    @PutMapping("/api/post/{post_id}")
+
+    //게시글 수정
+    @PutMapping("/api/posts/{post_id}")
     public void updatePost(@PathVariable Long post_id, @RequestBody PostRequestDto postRequestDto){
         postService.update(post_id, postRequestDto);
+    }
+
+    @DeleteMapping("/api/posts/{post_id}")
+    public void deletePost(@PathVariable Long post_id){
+        postService.deletePost(post_id);
     }
 
 }

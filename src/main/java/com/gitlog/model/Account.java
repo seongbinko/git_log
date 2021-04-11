@@ -34,9 +34,9 @@ public class Account extends BaseTimeEntity {
 
     private String githubUrl;
 
-    public Account(String password, String nickname, String email, String bio, String imgUrl, String githubUrl){
-        this.password = password;
+    public Account(String nickname, String password, String email, String bio, String imgUrl, String githubUrl){
         this.nickname = nickname;
+        this.password = password;
         this.email = email;
         this.bio = bio;
         this.imgUrl = imgUrl;

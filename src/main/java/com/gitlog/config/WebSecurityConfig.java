@@ -21,7 +21,7 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 @EnableWebSecurity // 스프링 Security 지원을 가능하게 함 Spring Security Filter Chain 을 사용한다는 것
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
-    //private final JwtTokenProvider jwtTokenProvider;
+    private final JwtTokenProvider jwtTokenProvider;
 
     @Bean
     public BCryptPasswordEncoder encodePassword(){
@@ -65,9 +65,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 //                .antMatchers(HttpMethod.POST, "/api/books/**").authenticated()
 //                .antMatchers(HttpMethod.PUT, "/api/books/**").authenticated()
 //                .antMatchers(HttpMethod.DELETE, "/api/books/**").authenticated()
-                .anyRequest().permitAll();
-//                .and()
-//                .addFilterBefore(new JwtAutenticationFilter(jwtTokenProvider), UsernamePasswordAuthenticationFilter.class);
+                .anyRequest().permitAll().and()
+                .addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider), UsernamePasswordAuthenticationFilter.class);
 //                .antMatchers("/api/books").hasRole("USER")
     }
 

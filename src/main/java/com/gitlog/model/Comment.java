@@ -29,4 +29,10 @@ public class Comment extends BaseTimeEntity{
     @JoinColumn(name = "post_id")
     private Post post;
 
+    public Comment(String content, Post post, Account account){
+        this.content = content;
+        this.post = post;
+        this.account = account;
+    }
+
 }

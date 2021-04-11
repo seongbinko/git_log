@@ -1,15 +1,12 @@
 package com.gitlog.service;
 
+import com.gitlog.config.JwtTokenProvider;
 import com.gitlog.dto.AccountRequestDto;
 import com.gitlog.model.Account;
-import com.gitlog.model.Message;
 import com.gitlog.repository.AccountRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.HttpStatusCodeException;
 
 import java.util.Optional;
 
@@ -18,6 +15,7 @@ import java.util.Optional;
 public class AccountService {
     private final AccountRepository accountRepository;
     private final PasswordEncoder passwordEncoder;
+    private final JwtTokenProvider jwtTokenProvider;
 
     public int isDuplicateEmail(AccountRequestDto accountRequestDto){
         String email = accountRequestDto.getEmail();
@@ -58,7 +56,7 @@ public class AccountService {
         String github_url = accountRequestDto.getGithubUrl();
         String img_url = accountRequestDto.getImgUrl();
 
-        Account account = new Account(nickname, password, email, bio, github_url, img_url);
+        Account account = new Account(nickname, password, email, bio, img_url, github_url);
         accountRepository.save(account);
     }
 }
