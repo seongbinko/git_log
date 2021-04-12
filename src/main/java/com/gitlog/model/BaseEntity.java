@@ -2,6 +2,7 @@ package com.gitlog.model;
 
 import lombok.Getter;
 import org.springframework.data.annotation.CreatedBy;
+import org.springframework.data.annotation.LastModifiedBy;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
@@ -18,6 +19,6 @@ public abstract class BaseEntity extends BaseTimeEntity{
     @Column(updatable = false)
     private String createdBy;
 
-    @LastModifiedDate
+    @LastModifiedBy
     private String lastModifiedBy;
 }

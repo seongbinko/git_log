@@ -1,5 +1,6 @@
 package com.gitlog.model;
 
+import com.gitlog.dto.CommentRequestDto;
 import lombok.*;
 
 import javax.persistence.*;
@@ -11,7 +12,7 @@ import javax.persistence.*;
 @NoArgsConstructor(access = AccessLevel.PROTECTED) // protected로 기본생성자 생성
 @AllArgsConstructor
 @ToString(of = {"id", "content"})
-public class Comment extends BaseTimeEntity{
+public class Comment extends BaseEntity{
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -27,4 +28,18 @@ public class Comment extends BaseTimeEntity{
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "post_id")
     private Post post;
+
+    public void addPostAndAccount(Post post, Account account) {
+        this.post = post;
+        this.account = account;
+    }
+
+    public void updateComment(CommentRequestDto commentRequestDto) {
+        this.content = commentRequestDto.getContent();
+    }
+
+    public void removePostAndAccount(Post post, Account account) {
+        this.post = null;
+        this.account = null;
+    }
 }

@@ -4,6 +4,15 @@ import lombok.Getter;
 import lombok.Setter;
 
 @Getter
-@Setter
 public class AccountRequestDto {
+
+    private String nickname;
+
+    private String email;
+
+    private String password;
+
+    private String passwordConfirm;
+
+    private String githubUrl;
 }
