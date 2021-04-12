@@ -1,5 +1,6 @@
 package com.gitlog.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.gitlog.dto.PostRequestDto;
 import lombok.*;
 
@@ -23,15 +24,20 @@ public class Comment extends BaseTimeEntity{
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "account_id")
+    @JsonIgnore
     private Account account;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "post_id")
+    @JsonIgnore
     private Post post;
 
-    public Comment(String content, Post post, Account account){
+    public Comment(String content, Post post){
         this.content = content;
         this.post = post;
+    }
+
+    public void addAccount(Account account){
         this.account = account;
     }
 

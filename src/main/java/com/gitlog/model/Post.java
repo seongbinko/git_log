@@ -1,5 +1,7 @@
 package com.gitlog.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.gitlog.config.UserDetailsImpl;
 import com.gitlog.dto.PostRequestDto;
 import lombok.*;
 
@@ -27,21 +29,28 @@ public class Post extends BaseEntity{
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "account_id")
+    @JsonIgnore
     private Account account;
 
     @OneToMany(mappedBy = "post")
     @Builder.Default
+    @JsonIgnore
     // @JsonIgnore entity를 직접 노출할 경우 필요
     List<Comment> comments = new ArrayList<>();
 
     @OneToMany(mappedBy = "post")
     @Builder.Default
+    @JsonIgnore
     // @JsonIgnore entity를 직접 노출할 경우 필요
     List<Heart> hearts = new ArrayList<>();
 
-    public Post(String content, String imgUrl){
-        this.content = content;
-        this.imgUrl = imgUrl;
+    public Post(PostRequestDto requestDto){
+        this.content = requestDto.getContent();
+        this.imgUrl = requestDto.getImgUrl();
+    }
+
+    public void addAccount(Account account){
+        this.account = account;
     }
 
     public void update(PostRequestDto postRequestDto){

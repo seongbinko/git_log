@@ -15,7 +15,6 @@ import java.util.Optional;
 public class AccountService {
     private final AccountRepository accountRepository;
     private final PasswordEncoder passwordEncoder;
-    private final JwtTokenProvider jwtTokenProvider;
 
     public int isDuplicateEmail(AccountRequestDto accountRequestDto){
         String email = accountRequestDto.getEmail();

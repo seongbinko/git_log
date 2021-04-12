@@ -1,11 +1,16 @@
 package com.gitlog.controller;
 
+import com.gitlog.config.UserDetailsImpl;
 import com.gitlog.dto.PostRequestDto;
-import com.gitlog.model.Comment;
+import com.gitlog.dto.PostResponseDto;
 import com.gitlog.model.Post;
+import com.gitlog.repository.PostRepository;
 import com.gitlog.service.PostService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -14,30 +19,34 @@ import java.util.List;
 @RestController
 public class PostController {
     private final PostService postService;
+    private final PostRepository postRepository;
 
     //게시글 가져오기
     @GetMapping("/api/posts")
-    public Page<Post> getComment(@RequestParam("page") int page,
-                                 @RequestParam("size") int size){
-        page = page -1;
-        return postService.getPost(page,size);
-
+    public Page<PostResponseDto> getPosts(@RequestParam("page") int page,
+                                          @RequestParam("size") int size) {
+        return postService.getPost(page, size);
     }
+
+//    @GetMapping("/story/{account_id}")
+//    public List<Post> getUserStory(@PathVariable Long account_id){
+//        return postService.getUserStory(account_id);
+//    }
 
     //게시글 작성
     @PostMapping("/api/posts")
-    public void writeComment(@RequestBody PostRequestDto postRequestDto){
-        postService.createPost(postRequestDto);
+    public void writePost(@RequestBody PostRequestDto postRequestDto, @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        postService.createPost(postRequestDto, userDetails.getAccount());
     }
 
     //게시글 수정
     @PutMapping("/api/posts/{post_id}")
-    public void updatePost(@PathVariable Long post_id, @RequestBody PostRequestDto postRequestDto){
+    public void updatePost(@PathVariable Long post_id, @RequestBody PostRequestDto postRequestDto) {
         postService.update(post_id, postRequestDto);
     }
 
     @DeleteMapping("/api/posts/{post_id}")
-    public void deletePost(@PathVariable Long post_id){
+    public void deletePost(@PathVariable Long post_id) {
         postService.deletePost(post_id);
     }
 

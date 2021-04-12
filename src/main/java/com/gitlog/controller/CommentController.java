@@ -1,11 +1,15 @@
 package com.gitlog.controller;
 
+import com.gitlog.config.UserDetailsImpl;
 import com.gitlog.dto.CommentRequestDto;
+import com.gitlog.model.Comment;
 import com.gitlog.service.CommentService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.HashMap;
+import java.util.List;
 
 @RequiredArgsConstructor
 @RestController
@@ -13,9 +17,21 @@ public class CommentController {
 
     private final CommentService commentService;
 
-//    @PostMapping("/api/{post_id}/comments")
-//    public void writeComment(@PathVariable Long post_id, CommentRequestDto commentRequestDto){
-//        commentService.writeComment(post_id, commentRequestDto);
+    @GetMapping("/api/posts/{post_id}/comments")
+    public HashMap<String, Object> getComment(@PathVariable Long post_id){
+        return commentService.readComment(post_id);
+
+    }
+    @PostMapping("/api/posts/{post_id}/comments")
+    public void writeComment(@PathVariable Long post_id, @RequestBody CommentRequestDto commentRequestDto, @AuthenticationPrincipal UserDetailsImpl userDetails){
+        System.out.println(commentRequestDto.getContent());
+        commentService.writeComment(post_id, commentRequestDto, userDetails.getAccount());
+    }
+//    @PutMapping("/api/posts/{post_id}/{comment_id}")
+//
+//    @DeleteMapping("/api/posts/{post_id}/comments/{comment_id}")
+//    public void deleteComment(@PathVariable Long post_id, @PathVariable Long comment_id, @AuthenticationPrincipal UserDetailsImpl userDetails){
+//        commentService.deleteComment(post_id, comment_id, userDetails);
 //    }
 
 }

@@ -31,11 +31,11 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     /*    AuthenticationManager 를 이용하여, 원하는 시점에 로그인이 될 수 있도록 바꿔보자.
         먼저, AuthenticationManager 를 외부에서 사용 하기 위해, AuthenticationManagerBean 을 이용하여 Sprint Securtiy 밖으로 AuthenticationManager 빼 내야 한다.*/
-//    @Bean
-//    @Override
-//    public AuthenticationManager authenticationManagerBean() throws Exception {
-//        return super.authenticationManagerBean();
-//    }
+    @Bean
+    @Override
+    public AuthenticationManager authenticationManagerBean() throws Exception {
+        return super.authenticationManagerBean();
+    }
 
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
@@ -61,11 +61,13 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
                 .authorizeRequests()
-                .antMatchers("/h2-console/**").permitAll()
+                .antMatchers("/api/login").permitAll()
+                .antMatchers("/api/signup").permitAll()
+//                .antMatchers("/h2-console/**").permitAll()
 //                .antMatchers(HttpMethod.POST, "/api/books/**").authenticated()
 //                .antMatchers(HttpMethod.PUT, "/api/books/**").authenticated()
 //                .antMatchers(HttpMethod.DELETE, "/api/books/**").authenticated()
-                .anyRequest().permitAll().and()
+                .anyRequest().authenticated().and()
                 .addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider), UsernamePasswordAuthenticationFilter.class);
 //                .antMatchers("/api/books").hasRole("USER")
     }

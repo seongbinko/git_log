@@ -8,6 +8,7 @@ import com.gitlog.service.AccountService;
 import com.google.gson.JsonObject;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -59,13 +60,9 @@ public class AccountController {
     @PostMapping("/api/login")
     public String login(@RequestBody AccountRequestDto accountRequestDto){
         Account account = accountRepository.findByNickname(accountRequestDto.getNickname()).orElseThrow(() -> new IllegalArgumentException("사용자를 찾을 수 없습니다."));
-        System.out.println(accountRequestDto.getPassword());
-        System.out.println(account.getPassword());
         if (!passwordEncoder.matches(accountRequestDto.getPassword(), account.getPassword())){
             throw new IllegalArgumentException("잘못된 비밀번호입니다.");
         }
-        JsonObject object = new JsonObject();
-        object.addProperty("token", jwtTokenProvider.createToken(account.getNickname(), account.getRoles()));
-        return object.toString();
+        return jwtTokenProvider.createToken(account.getNickname(), account.getRoles());
     }
 }

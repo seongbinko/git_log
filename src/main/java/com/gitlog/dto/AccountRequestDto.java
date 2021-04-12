@@ -3,9 +3,11 @@ package com.gitlog.dto;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.io.Serializable;
+
 @Getter
 @Setter
-public class AccountRequestDto {
+public class AccountRequestDto implements Serializable {
     private String nickname;
     private String password;
     private String password_check;
