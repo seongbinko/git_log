@@ -38,13 +38,13 @@ public class PostService {
         return newPost;
 
     }
-
+    //게시글 수정
     @Transactional
     public void update(Long post_id, PostRequestDto postRequestDto){
         Post post = postRepository.findById(post_id).orElseThrow(() -> new IllegalArgumentException("없는 게시글 아이디 입니다."));
         post.update(postRequestDto);
     }
-
+    //게시글 삭제
     @Transactional
     public void deletePost(Long post_id){
         postRepository.deleteById(post_id);

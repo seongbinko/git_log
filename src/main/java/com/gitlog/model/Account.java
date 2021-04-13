@@ -1,8 +1,6 @@
 package com.gitlog.model;
 
-import com.gitlog.dto.AccountRequestDto;
 import lombok.*;
-
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -33,24 +31,6 @@ public class Account extends BaseTimeEntity {
     private String imgUrl;
 
     private String githubUrl;
-
-    public Account(String nickname, String password, String email, String bio, String imgUrl, String githubUrl){
-        this.nickname = nickname;
-        this.password = password;
-        this.email = email;
-        this.bio = bio;
-        this.imgUrl = imgUrl;
-        this.githubUrl = githubUrl;
-    }
-
-//    public Account (AccountRequestDto accountRequestDto){
-//        this.password = accountRequestDto.getPassword();
-//        this.nickname = accountRequestDto.getNickname();
-//        this.email = accountRequestDto.getEmail();
-//        this.bio = accountRequestDto.getBio();
-//        this.githubUrl = accountRequestDto.getGithubUrl();
-//        this.imgUrl = accountRequestDto.getImgUrl();
-//    }
 
     @ElementCollection(fetch = FetchType.EAGER)
     @Builder.Default

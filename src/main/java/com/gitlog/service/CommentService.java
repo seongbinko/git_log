@@ -26,13 +26,13 @@ public class CommentService {
         return map;
     }
 
-    public void writeComment(Long post_id, CommentRequestDto commentRequestDto, Account account){
-        String content = commentRequestDto.getContent();
-        System.out.println(content);
-        List<Post> allData = postRepository.findAllById(post_id);
-        for (Post post : allData) {
-            Comment comment = new Comment(content, post);
-            commentRepository.save(comment);
-        }
-    }
+//    public void writeComment(Long post_id, CommentRequestDto commentRequestDto, Account account){
+//        String content = commentRequestDto.getContent();
+//        System.out.println(content);
+//        List<Post> allData = postRepository.findAllById(post_id);
+//        for (Post post : allData) {
+//            Comment comment = new Comment(content, post);
+//            commentRepository.save(comment);
+//        }
+//    }
 }

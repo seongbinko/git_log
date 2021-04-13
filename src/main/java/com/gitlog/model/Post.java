@@ -44,11 +44,6 @@ public class Post extends BaseEntity{
     // @JsonIgnore entity를 직접 노출할 경우 필요
     List<Heart> hearts = new ArrayList<>();
 
-    public Post(PostRequestDto requestDto){
-        this.content = requestDto.getContent();
-        this.imgUrl = requestDto.getImgUrl();
-    }
-
     public void addAccount(Account account){
         this.account = account;
     }

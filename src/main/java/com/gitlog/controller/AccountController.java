@@ -56,7 +56,7 @@ public class AccountController {
             return "해당 이름은 이미 사용중입니다.";
         }
     }
-
+    //Jwttoken 발급 로그인
     @PostMapping("/api/login")
     public String login(@RequestBody AccountRequestDto accountRequestDto){
         Account account = accountRepository.findByNickname(accountRequestDto.getNickname()).orElseThrow(() -> new IllegalArgumentException("사용자를 찾을 수 없습니다."));

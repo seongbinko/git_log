@@ -22,11 +22,11 @@ public class CommentController {
         return commentService.readComment(post_id);
 
     }
-    @PostMapping("/api/posts/{post_id}/comments")
-    public void writeComment(@PathVariable Long post_id, @RequestBody CommentRequestDto commentRequestDto, @AuthenticationPrincipal UserDetailsImpl userDetails){
-        System.out.println(commentRequestDto.getContent());
-        commentService.writeComment(post_id, commentRequestDto, userDetails.getAccount());
-    }
+//    @PostMapping("/api/posts/{post_id}/comments")
+//    public void writeComment(@PathVariable Long post_id, @RequestBody CommentRequestDto commentRequestDto, @AuthenticationPrincipal UserDetailsImpl userDetails){
+//        System.out.println(commentRequestDto.getContent());
+//        commentService.writeComment(post_id, commentRequestDto, userDetails.getAccount());
+//    }
 //    @PutMapping("/api/posts/{post_id}/{comment_id}")
 //
 //    @DeleteMapping("/api/posts/{post_id}/comments/{comment_id}")

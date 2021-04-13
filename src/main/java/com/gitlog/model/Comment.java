@@ -32,13 +32,4 @@ public class Comment extends BaseTimeEntity{
     @JsonIgnore
     private Post post;
 
-    public Comment(String content, Post post){
-        this.content = content;
-        this.post = post;
-    }
-
-    public void addAccount(Account account){
-        this.account = account;
-    }
-
 }

@@ -8,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.Collections;
 import java.util.Optional;
 
 @RequiredArgsConstructor
@@ -37,25 +38,16 @@ public class AccountService {
     }
 
     //사용자 추
-    public void registerUser(AccountRequestDto accountRequestDto){
-        String nickname = accountRequestDto.getNickname();
-        Optional<Account> found = accountRepository.findByNickname(nickname);
-        if (found.isPresent()){
-            throw new IllegalArgumentException("이미 존재하는 닉네임입니다.");
-        }
-        String password = accountRequestDto.getPassword();
-        String password_check = accountRequestDto.getPassword_check();
-        if (!password.equals(password_check)){
-            throw new IllegalArgumentException("비밀번호가 일치 하지 않습니다.");
-        }
-        password = passwordEncoder.encode(accountRequestDto.getPassword());
-
-        String email = accountRequestDto.getEmail();
-        String bio = accountRequestDto.getBio();
-        String github_url = accountRequestDto.getGithubUrl();
-        String img_url = accountRequestDto.getImgUrl();
-
-        Account account = new Account(nickname, password, email, bio, img_url, github_url);
-        accountRepository.save(account);
+    public Account registerUser(AccountRequestDto accountRequestDto){
+        return accountRepository.save(
+                Account.builder()
+                .nickname(accountRequestDto.getNickname())
+                .email(accountRequestDto.getEmail())
+                .password(passwordEncoder.encode(accountRequestDto.getPassword()))
+                .githubUrl(accountRequestDto.getGithubUrl())
+                .bio(accountRequestDto.getBio())
+                .roles(Collections.singletonList("ROLE_USER"))
+                .build()
+        );
     }
 }
