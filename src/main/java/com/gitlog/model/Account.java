@@ -28,8 +28,6 @@ public class Account extends BaseTimeEntity {
 
     private String bio;
 
-    private String imgUrl;
-
     private String githubUrl;
 
     @ElementCollection(fetch = FetchType.EAGER)

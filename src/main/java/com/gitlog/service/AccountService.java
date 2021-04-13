@@ -1,6 +1,6 @@
 package com.gitlog.service;
 
-import com.gitlog.config.JwtTokenProvider;
+import com.gitlog.dto.LoginRequestDto;
 import com.gitlog.dto.AccountRequestDto;
 import com.gitlog.model.Account;
 import com.gitlog.repository.AccountRepository;
@@ -10,6 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import javax.validation.Valid;
 import java.util.Collections;
 import java.util.Optional;
 
@@ -40,17 +41,8 @@ public class AccountService {
 
 
     //사용자 추가
-    public Account registerUser(AccountRequestDto accountRequestDto){
-        String nickname = accountRequestDto.getNickname();
-        Optional<Account> account_found = accountRepository.findByNickname(nickname);
-        if (account_found.isPresent()){
-            throw new IllegalArgumentException("이미 사용중인 사용자 이름입니다.");
-        }
-        String email = accountRequestDto.getEmail();
-        Optional<Account> email_found = accountRepository.findByEmail(email);
-        if (email_found.isPresent()){
-            throw new IllegalArgumentException("이미 사용중인 이메일 입니다.");
-        }
+    public Account registerAccount(@Valid AccountRequestDto accountRequestDto){
+
         return accountRepository.save(
                 Account.builder()
                 .nickname(accountRequestDto.getNickname())
@@ -62,13 +54,17 @@ public class AccountService {
                 .build()
         );
     }
-
+    //사용자 수정
     public ResponseEntity<String> modifyAccount(AccountRequestDto accountRequestDto){
         Account.builder()
                 .password(passwordEncoder.encode(accountRequestDto.getPassword()))
                 .githubUrl(accountRequestDto.getGithubUrl())
                 .bio(accountRequestDto.getBio())
-                .imgUrl(accountRequestDto.getImgUrl()).build();
+                .build();
         return new ResponseEntity<>("성공적으로 수정하였습니다", HttpStatus.OK);
+    }
+
+    public Account login(LoginRequestDto loginRequestDto){
+        return accountRepository.findByNickname(loginRequestDto.getNickname()).orElse(null);
     }
 }

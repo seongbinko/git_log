@@ -29,18 +29,16 @@ public class Post extends BaseEntity{
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "account_id")
-    @JsonIgnore
+//    @JsonIgnore
     private Account account;
 
     @OneToMany(mappedBy = "post")
     @Builder.Default
-    @JsonIgnore
     // @JsonIgnore entity를 직접 노출할 경우 필요
     List<Comment> comments = new ArrayList<>();
 
     @OneToMany(mappedBy = "post")
     @Builder.Default
-    @JsonIgnore
     // @JsonIgnore entity를 직접 노출할 경우 필요
     List<Heart> hearts = new ArrayList<>();
 

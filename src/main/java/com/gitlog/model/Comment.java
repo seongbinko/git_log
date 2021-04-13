@@ -24,12 +24,12 @@ public class Comment extends BaseTimeEntity{
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "account_id")
-    @JsonIgnore
+//    @JsonIgnore
     private Account account;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "post_id")
-    @JsonIgnore
+//    @JsonIgnore
     private Post post;
 
 }
