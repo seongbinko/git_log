@@ -11,6 +11,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Service;
 
@@ -32,25 +34,34 @@ public class PostService {
 
     //게시글 쓰기
     @Transactional
-    public Post createPost(PostRequestDto postRequestDto, Account account){
+    public ResponseEntity<String> createPost(PostRequestDto postRequestDto, Account account){
         Post post = Post.builder()
                 .content(postRequestDto.getContent())
                 .imgUrl(postRequestDto.getImgUrl())
                 .build();
         Post newPost = postRepository.save(post);
         newPost.addAccount(account);
-        return newPost;
+        return new ResponseEntity<>("성공적으로 저장되었습니다", HttpStatus.OK);
 
     }
     //게시글 수정
     @Transactional
-    public void updatePost(Long post_id, PostRequestDto postRequestDto){
-        Post post = postRepository.findById(post_id).orElseThrow(() -> new IllegalArgumentException("없는 게시글 아이디 입니다."));
+    public ResponseEntity<String> updatePost(Long post_id, PostRequestDto postRequestDto){
+        Post post = postRepository.findById(post_id).orElse(null);
+        if (post == null){
+            return new ResponseEntity<>("해당 게시글은 없는 게시글입니다.", HttpStatus.BAD_REQUEST);
+        }
         post.update(postRequestDto);
+        return new ResponseEntity<>("성공적으로 수정하였습니다", HttpStatus.OK);
     }
     //게시글 삭제
     @Transactional
-    public void deletePost(Long post_id){
+    public ResponseEntity<String> deletePost(Long post_id){
+        Post post = postRepository.findById(post_id).orElse(null);
+        if (post == null){
+            return new ResponseEntity<>("해당 게시글은 없는 게시글입니다.", HttpStatus.BAD_REQUEST);
+        }
         postRepository.deleteById(post_id);
+        return new ResponseEntity<>("성공적으로 삭제하였습니다", HttpStatus.OK);
     }
 }

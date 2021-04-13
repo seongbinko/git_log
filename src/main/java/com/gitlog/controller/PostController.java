@@ -31,14 +31,13 @@ public class PostController {
     //게시글 작성
     @PostMapping("/api/posts")
     public ResponseEntity writePost(@RequestBody PostRequestDto postRequestDto, @AuthenticationPrincipal UserDetailsImpl userDetails) {
-        postService.createPost(postRequestDto, userDetails.getAccount());
-        return ResponseEntity.ok().build();
+        return postService.createPost(postRequestDto, userDetails.getAccount());
     }
 
     //게시글 수정
     @PutMapping("/api/posts/{post_id}")
-    public void updatePost(@PathVariable Long post_id, @RequestBody PostRequestDto postRequestDto) {
-        postService.updatePost(post_id, postRequestDto);
+    public ResponseEntity updatePost(@PathVariable Long post_id, @RequestBody PostRequestDto postRequestDto) {
+        return postService.updatePost(post_id, postRequestDto);
     }
 
     @DeleteMapping("/api/posts/{post_id}")

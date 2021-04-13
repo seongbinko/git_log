@@ -36,25 +36,14 @@ public class AccountController {
 
     // 이메일 중복 체크
     @PostMapping("/api/signup/email-check")
-    public String email_check(@RequestBody AccountRequestDto accountRequestDto) throws Exception{
-        int result = accountService.isDuplicateEmail(accountRequestDto);
-        String response;
-        if (result == 0){
-            return "이메일 사용가능!";
-        }else {
-            return "이메일 중복! 사용 불가능!";
-        }
+    public ResponseEntity<String> email_check(@RequestBody AccountRequestDto accountRequestDto) throws Exception{
+        return accountService.isDuplicateEmail(accountRequestDto);
     }
 
     // 닉네임 중복 체크
     @PostMapping("/api/signup/nickname-check")
-    public String nickname_check(@RequestBody AccountRequestDto accountRequestDto){
-        int result = accountService.nickname_check(accountRequestDto);
-        if (result == 0){
-            return "사용가능한 이름입니다.";
-        }else{
-            return "해당 이름은 이미 사용중입니다.";
-        }
+    public ResponseEntity<String> nickname_check(@RequestBody AccountRequestDto accountRequestDto){
+        return accountService.nickname_check(accountRequestDto);
     }
     //Jwttoken 발급 로그인
     @PostMapping("/api/login")
@@ -64,5 +53,9 @@ public class AccountController {
             throw new IllegalArgumentException("잘못된 비밀번호입니다.");
         }
         return jwtTokenProvider.createToken(account.getNickname(), account.getRoles());
+    }
+    @PostMapping("/api/settings")
+    public ResponseEntity<String> modifyAccount(@RequestBody AccountRequestDto accountRequestDto){
+        return accountService.modifyAccount(accountRequestDto);
     }
 }
