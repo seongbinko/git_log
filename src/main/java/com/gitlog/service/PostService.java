@@ -1,6 +1,5 @@
 package com.gitlog.service;
 
-import com.gitlog.config.UserDetailsImpl;
 import com.gitlog.dto.PostRequestDto;
 import com.gitlog.dto.PostResponseDto;
 import com.gitlog.model.Account;
@@ -9,15 +8,12 @@ import com.gitlog.repository.PostRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
-import java.util.List;
 
 @RequiredArgsConstructor
 @Service

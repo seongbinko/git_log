@@ -27,7 +27,7 @@ public class AccountRequestDtoValidator implements Validator {
         if (accountRepository.existsByEmail(accountRequestDto.getEmail())) {
             errors.rejectValue("email", "invalid.email", new Object[]{accountRequestDto.getEmail()}, "이미 사용중인 이메일 입니다.");
         }
-        if (!accountRequestDto.getPassword().equals(accountRequestDto.getPassword_check())) {
+        if (!accountRequestDto.getPassword().equals(accountRequestDto.getPasswordConfirm())) {
             errors.rejectValue("password", "wrong.value", "입력한 패스워드가 서로 일치하지 않습니다.");
         }
     }

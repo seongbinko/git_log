@@ -10,22 +10,11 @@ import javax.validation.constraints.Size;
 
 @Getter
 @Setter
-public class AccountRequestDto {
-    @NotBlank
-    @Size(min = 3, max = 20)
-    private String nickname;
+public class AccountUpdateDto {
 
     @NotBlank
     @Size(min =4, max = 50)
     private String password;
-
-    @NotBlank
-    @Size(min =4, max = 50)
-    private String passwordConfirm;
-
-    @NotBlank
-    @Email
-    private String email;
 
     private String imgUrl;
 

@@ -1,10 +1,7 @@
 package com.gitlog.controller;
 
 import com.gitlog.config.JwtTokenProvider;
-import com.gitlog.dto.EmailRequestDto;
-import com.gitlog.dto.LoginRequestDto;
-import com.gitlog.dto.AccountRequestDto;
-import com.gitlog.dto.NicknameRequestDto;
+import com.gitlog.dto.*;
 import com.gitlog.model.Account;
 import com.gitlog.service.AccountService;
 import com.gitlog.validator.EmailRequestDtoValidator;
@@ -95,11 +92,11 @@ public class AccountController {
     }
 
     //사용자 수정
-    @PutMapping("/api/profile")
-    public ResponseEntity<String> modifyAccount(@Valid @RequestBody AccountRequestDto accountRequestDto, Errors errors) {
-        if (errors.hasErrors()){
-            return ResponseEntity.badRequest().body(errors.getFieldError().getDefaultMessage());
-        }
-        return accountService.modifyAccount(accountRequestDto);
-    }
+//    @PutMapping("/api/profile")
+//    public ResponseEntity<String> modifyAccount(@Valid @RequestBody AccountUpdateDto accountUpdateDto, Errors errors) {
+//        if (errors.hasErrors()){
+//            return ResponseEntity.badRequest().body(errors.getFieldError().getDefaultMessage());
+//        }
+//        return accountService.modifyAccount(accountUpdateDto);
+//    }
 }
