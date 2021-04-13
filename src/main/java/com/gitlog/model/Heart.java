@@ -30,11 +30,15 @@ public class Heart extends BaseTimeEntity{
     private Post post;
 
     public void addPostAndAccount(Post post, Account account) {
-        this.post = post;
         this.account = account;
+        this.post = post;
+        post.getHearts().add(this);
+        account.getHearts().add(this);
     }
 
     public void cancelHeart(Post post, Account account) {
+        post.getHearts().remove(this);
+        account.getHearts().remove(this);
         this.post = null;
         this.account = null;
     }

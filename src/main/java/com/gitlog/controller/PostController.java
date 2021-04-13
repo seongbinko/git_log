@@ -16,8 +16,10 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -58,19 +60,24 @@ public class PostController {
     }
 
     @PostMapping("/api/posts")
-    public ResponseEntity savePost(@AuthenticationPrincipal UserDetailsImpl userDetails, @RequestBody PostRequestDto postRequestDto) {
-        postService.savePost(userDetails.getAccount(), postRequestDto);
+    public ResponseEntity savePost(@AuthenticationPrincipal UserDetailsImpl userDetails, @Valid @RequestBody PostRequestDto postRequestDto, Errors errors) {
+        if(errors.hasErrors()) {
+            return ResponseEntity.badRequest().body(errors.getAllErrors());
+        }
+        Account account = accountRepository.findByNickname(userDetails.getUsername()).orElse(null);
+        postService.savePost(account, postRequestDto);
         return ResponseEntity.ok().build();
     }
 
     @PutMapping("/api/posts/{post_id}")
     public ResponseEntity updatePost(@AuthenticationPrincipal UserDetailsImpl userDetails
             , @PathVariable Long post_id
-            , @RequestBody PostRequestDto postRequestDto) {
-
+            , @Valid @RequestBody PostRequestDto postRequestDto, Errors errors) {
+        if(errors.hasErrors()) {
+            return ResponseEntity.badRequest().body(errors.getAllErrors());
+        }
         Post post = postRepository.findById(post_id).orElse(null);
-        String nickname = post.getAccount().getNickname();
-        if(post == null || !nickname.equals(userDetails.getAccount().getNickname())) {
+        if(post == null || !userDetails.getUsername().equals(post.getCreatedBy())) {
             return ResponseEntity.badRequest().build(); //Todo 메시지를 전송하는 방식으로
         }
         postService.updatePost(postRequestDto, post);
@@ -82,11 +89,10 @@ public class PostController {
             @PathVariable Long post_id
     ) {
         Post post = postRepository.findById(post_id).orElse(null);
-        String nickname = post.getAccount().getNickname();
-        if(post == null || !nickname.equals(userDetails.getAccount().getNickname())) {
+        if(post == null || !userDetails.getUsername().equals(post.getCreatedBy())) {
             return ResponseEntity.badRequest().build(); //Todo 메시지를 전송하는 방식으로
         }
-        postService.deletePost(post); //Todo 댓글 구현후 구현
+        postService.deletePost(post);
         return ResponseEntity.ok().build();
     }
 

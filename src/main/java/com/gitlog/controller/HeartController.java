@@ -4,6 +4,7 @@ import com.gitlog.config.UserDetailsImpl;
 import com.gitlog.model.Account;
 import com.gitlog.model.Heart;
 import com.gitlog.model.Post;
+import com.gitlog.repository.AccountRepository;
 import com.gitlog.repository.HeartRepository;
 import com.gitlog.repository.PostRepository;
 import com.gitlog.service.HeartService;
@@ -13,15 +14,19 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Optional;
+
 @RestController
 @RequiredArgsConstructor
 public class HeartController {
 
     private final HeartService heartService;
 
+    private final AccountRepository accountRepository;
     private final PostRepository postRepository;
     private final HeartRepository heartRepository;
 
+    // Todo heart가 post_id마다 붙어야 하나? 코드수정 필요
     @GetMapping("/api/posts/{post_id}/heart")
     public boolean ReadHeart(@PathVariable Long post_id, @AuthenticationPrincipal UserDetailsImpl userDetails){
         Post post = postRepository.findById(post_id).orElse(null);
@@ -37,7 +42,9 @@ public class HeartController {
     @PostMapping("/api/posts/{post_id}/heart")
     public ResponseEntity saveHeart(@PathVariable Long post_id, @AuthenticationPrincipal UserDetailsImpl userDetails){
         Post post = postRepository.findById(post_id).orElse(null);
-        Account account = userDetails.getAccount();
+
+        Account account = accountRepository.findByNickname(userDetails.getUsername()).orElse(null);
+        //Account account = userDetails.getAccount();
         boolean exists = heartRepository.existsByPostAndAccount(post, account);
 
         if(post == null || exists) {
@@ -51,8 +58,8 @@ public class HeartController {
     public ResponseEntity cancelHeart(@PathVariable Long post_id, @AuthenticationPrincipal UserDetailsImpl userDetails){
         Post post = postRepository.findById(post_id).orElse(null);
 
-        Account account = userDetails.getAccount();
-
+        Account account = accountRepository.findByNickname(userDetails.getUsername()).orElse(null);
+        //Account account = userDetails.getAccount();
         boolean exists = heartRepository.existsByPostAndAccount(post, account);
         if(post == null || !exists) {
             return ResponseEntity.badRequest().build();

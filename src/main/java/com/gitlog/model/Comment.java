@@ -32,6 +32,8 @@ public class Comment extends BaseEntity{
     public void addPostAndAccount(Post post, Account account) {
         this.post = post;
         this.account = account;
+        post.getComments().add(this);
+        account.getComments().add(this);
     }
 
     public void updateComment(CommentRequestDto commentRequestDto) {
@@ -39,6 +41,8 @@ public class Comment extends BaseEntity{
     }
 
     public void removePostAndAccount(Post post, Account account) {
+        post.getComments().remove(this);
+        account.getComments().remove(this);
         this.post = null;
         this.account = null;
     }

@@ -13,9 +13,12 @@ import com.gitlog.service.CommentService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @RestController
@@ -27,7 +30,7 @@ public class CommentController {
     private final CommentRepository commentRepository;
     private final AccountRepository accountRepository;
 
-    @GetMapping("/posts/{postId}/comments")
+    @GetMapping("/api/posts/{postId}/comments")
     public ResponseEntity readCommentsByPostId(@PathVariable Long postId) {
         Post post = postRepository.findById(postId).orElse(null);
         if(post == null) {
@@ -43,43 +46,50 @@ public class CommentController {
         return ResponseEntity.ok().body(toList);
     }
 
-    @PostMapping("/posts/{postId}/comments")
+    @PostMapping("/api/posts/{postId}/comments")
     public ResponseEntity saveComment(@PathVariable Long postId,
                                       @AuthenticationPrincipal UserDetailsImpl userDetails,
-                                      @RequestBody CommentRequestDto commentRequestDto) {
+                                      @Valid @RequestBody CommentRequestDto commentRequestDto, Errors errors) {
+        if(errors.hasErrors()) {
+            return ResponseEntity.badRequest().body(errors.getAllErrors());
+        }
+
         Post post = postRepository.findById(postId).orElse(null);
         if(post == null) {
             return ResponseEntity.badRequest().build();
         }
-        commentService.saveComment(post, commentRequestDto, userDetails.getAccount());
+        Account account = accountRepository.findByNickname(userDetails.getUsername()).orElse(null);
+
+        commentService.saveComment(post, commentRequestDto, account);
         return ResponseEntity.ok().build();
     }
 
-    @PutMapping("/posts/*/comments/{commentId}")
-    public ResponseEntity updateComment(@PathVariable Long commentId,
+    @PutMapping("/api/posts/{postId}/comments/{commentId}")
+    public ResponseEntity updateComment(@PathVariable Long commentId, @PathVariable Long postId,
                                         @AuthenticationPrincipal UserDetailsImpl userDetails,
-                                        @RequestBody CommentRequestDto commentRequestDto) {
-        Comment comment = commentRepository.findById(commentId).orElse(null);
-        String nickname = comment.getCreatedBy();
+                                        @Valid @RequestBody CommentRequestDto commentRequestDto, Errors errors) {
+        if(errors.hasErrors()) {
+            return ResponseEntity.badRequest().body(errors.getAllErrors());
+        }
 
-        if(comment == null || !nickname.equals(userDetails.getAccount().getNickname())) {
+        Comment comment = commentRepository.findById(commentId).orElse(null);
+        Post post = postRepository.findById(postId).orElse(null);
+        if(comment == null || post == null || !userDetails.getUsername().equals(comment.getCreatedBy())) {
             return ResponseEntity.badRequest().build();
         }
         commentService.updateComment(comment, commentRequestDto);
         return ResponseEntity.ok().build();
     }
 
-    @DeleteMapping("/posts/{postId}/comments/{commentId}")
+    @DeleteMapping("/api/posts/{postId}/comments/{commentId}")
     public ResponseEntity deleteComment(@PathVariable Long postId, @PathVariable Long commentId, @AuthenticationPrincipal UserDetailsImpl userDetails) {
         Comment comment = commentRepository.findById(commentId).orElse(null);
         Post post = postRepository.findById(postId).orElse(null);
 
-        String nickname = comment.getCreatedBy();
-        if(comment == null || !nickname.equals(userDetails.getAccount().getNickname())) {
+        if(comment == null || post == null || !userDetails.getUsername().equals(comment.getCreatedBy())) {
             return ResponseEntity.badRequest().build();
         }
-
-        Account account = accountRepository.findByNickname(nickname).orElse(null);
+        Account account = accountRepository.findByNickname(userDetails.getUsername()).orElse(null);
         commentService.deleteComment(comment, post, account);
         return ResponseEntity.ok().build();
     }

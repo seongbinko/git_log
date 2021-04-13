@@ -15,7 +15,5 @@ public interface HeartRepository extends JpaRepository<Heart, Long> {
 
     Heart findByPostAndAccount(Post post, Account account);
 
-    List<Heart> findAllByPost(Post post);
-
     void deleteAllByPost(Post post);
 }

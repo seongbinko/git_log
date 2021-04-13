@@ -40,6 +40,7 @@ public class Post extends BaseEntity{
 
     public void addAccount(Account account) {
         this.account = account;
+        account.getPosts().add(this);
     }
 
     public void updatePost(PostRequestDto postRequestDto) {
@@ -47,11 +48,10 @@ public class Post extends BaseEntity{
         this.imgUrl = postRequestDto.getImgUrl();
     }
 
-    public void removeCommentsAndHeartsAndAccount(Post post) {
-        this.comments.removeAll(post.getComments());
-        this.hearts.removeAll(post.getHearts());
-        post.getAccount().getPosts().remove(this);
-
+    public void deletePost(Post post) {
+        //post.getAccount().getPosts().remove(this);
         this.account = null;
+        this.comments.clear();
+        this.hearts.clear();
     }
 }
