@@ -8,7 +8,7 @@ import javax.validation.constraints.NotBlank;
 @Data
 public class EmailRequestDto {
 
-    @Email
     @NotBlank
+    @Email
     private String email;
 }

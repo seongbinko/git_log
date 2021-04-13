@@ -66,7 +66,7 @@ public class AccountController {
         return ResponseEntity.ok().build();
     }
 
-    @PostMapping("/api/signup/nickname-check")
+    @PostMapping("/api/signup/email-check")
     public ResponseEntity emailCheck(@Valid @RequestBody EmailRequestDto emailRequestDto, Errors errors) {
         if(errors.hasErrors()) {
             return ResponseEntity.badRequest().body(errors.getAllErrors());
@@ -74,7 +74,7 @@ public class AccountController {
         return ResponseEntity.ok().build();
     }
 
-    @PostMapping("/api/signup/email-check")
+    @PostMapping("/api/signup/nickname-check")
     public ResponseEntity emailCheck(@Valid @RequestBody NicknameRequestDto nicknameRequestDto, Errors errors) {
         if(errors.hasErrors()) {
             return ResponseEntity.badRequest().body(errors.getAllErrors());
