@@ -55,12 +55,11 @@ public class AccountService {
         );
     }
     //사용자 수정
-    public ResponseEntity<String> modifyAccount(AccountRequestDto accountRequestDto){
-        Account.builder()
-                .password(passwordEncoder.encode(accountRequestDto.getPassword()))
-                .githubUrl(accountRequestDto.getGithubUrl())
-                .bio(accountRequestDto.getBio())
-                .build();
+    public ResponseEntity modifyAccount(AccountRequestDto accountRequestDto){
+        String githubUrl = accountRequestDto.getGithubUrl();
+        String bio = accountRequestDto.getBio();
+        Account account = accountRepository.findByNickname(accountRequestDto.getNickname()).orElse(null);
+        account.update(account.getPassword(), account.getGithubUrl(), account.getBio(), account.getImgUrl());
         return new ResponseEntity<>("성공적으로 수정하였습니다", HttpStatus.OK);
     }
 

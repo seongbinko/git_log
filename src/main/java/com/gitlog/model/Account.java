@@ -28,6 +28,8 @@ public class Account extends BaseTimeEntity {
 
     private String bio;
 
+    private String imgUrl;
+
     private String githubUrl;
 
     @ElementCollection(fetch = FetchType.EAGER)
@@ -44,4 +46,10 @@ public class Account extends BaseTimeEntity {
     // @JsonIgnore entity를 직접 노출할 경우 필요
     List<Comment> comments = new ArrayList<>();
 
+    public void update(String password, String githubUrl, String bio, String imgUrl){
+        this.password = password;
+        this.githubUrl = githubUrl;
+        this.bio = bio;
+        this.imgUrl = imgUrl;
+    }
 }

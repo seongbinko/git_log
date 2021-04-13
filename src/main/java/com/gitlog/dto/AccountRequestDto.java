@@ -27,6 +27,8 @@ public class AccountRequestDto {
     @Email
     private String email;
 
+    private String imgUrl;
+
     private String bio;
 
     @URL

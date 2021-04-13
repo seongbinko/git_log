@@ -37,18 +37,21 @@ public class AccountController {
         webDataBinder.addValidators(accountRequestDtoValidator);
     }
 
+    //로그인 닉네임 + 비밀번호 검증 해주는 Validator 부분.
     @InitBinder("loginRequestDto")
-    public void loginBinder(WebDataBinder webDataBinder){
+    public void loginBinder(WebDataBinder webDataBinder) {
         webDataBinder.addValidators(loginRequestDtoValidator);
     }
 
+    //닉네임 중복체크 해주는 Validator 부분.
     @InitBinder("nicknameRequestDto")
-    public void nicknameBinder(WebDataBinder webDataBinder){
+    public void nicknameBinder(WebDataBinder webDataBinder) {
         webDataBinder.addValidators(nicknameRequestDtoValidator);
     }
 
+    //이메일 중복체크 해주는 Validator 부분.
     @InitBinder("emailRequestDto")
-    public void emailBinder(WebDataBinder webDataBinder){
+    public void emailBinder(WebDataBinder webDataBinder) {
         webDataBinder.addValidators(emailRequestDtoValidator);
     }
 
@@ -57,7 +60,7 @@ public class AccountController {
     public ResponseEntity<String> registerAccount(@Valid @RequestBody AccountRequestDto accountRequestDto, Errors errors) {
         if (errors.hasErrors()) {
             return ResponseEntity.badRequest().body(errors.getFieldError().getDefaultMessage());
-        }else {
+        } else {
             accountService.registerAccount(accountRequestDto);
             return new ResponseEntity<>("성공적으로 등록 하였습니다", HttpStatus.OK);
         }
@@ -72,25 +75,31 @@ public class AccountController {
         Account account = accountService.login(loginRequestDto);
         return ResponseEntity.ok().body(jwtTokenProvider.createToken(account.getNickname(), account.getRoles()));
     }
+
     //닉네임 중복확인
     @PostMapping("/api/signup/nickname-check")
-    public ResponseEntity checkNickname(@Valid @RequestBody NicknameRequestDto nicknameRequestDto, Errors errors){
-        if (errors.hasErrors()){
+    public ResponseEntity checkNickname(@Valid @RequestBody NicknameRequestDto nicknameRequestDto, Errors errors) {
+        if (errors.hasErrors()) {
             return ResponseEntity.badRequest().body(errors.getFieldError().getDefaultMessage());
         }
         return new ResponseEntity<>("사용 가능한 닉네임 입니다", HttpStatus.OK);
     }
+
     //이메일 중복확인
     @PostMapping("/api/signup/email-check")
-    public ResponseEntity checkEmail(@Valid @RequestBody EmailRequestDto emailRequestDto, Errors errors){
-        if (errors.hasErrors()){
+    public ResponseEntity checkEmail(@Valid @RequestBody EmailRequestDto emailRequestDto, Errors errors) {
+        if (errors.hasErrors()) {
             return ResponseEntity.badRequest().body(errors.getFieldError().getDefaultMessage());
         }
         return new ResponseEntity<>("사용 가능한 이메일 입니다", HttpStatus.OK);
     }
+
     //사용자 수정
-    @PutMapping ("/api/profile")
-    public ResponseEntity<String> modifyAccount(@RequestBody AccountRequestDto accountRequestDto) {
+    @PutMapping("/api/profile")
+    public ResponseEntity<String> modifyAccount(@Valid @RequestBody AccountRequestDto accountRequestDto, Errors errors) {
+        if (errors.hasErrors()){
+            return ResponseEntity.badRequest().body(errors.getFieldError().getDefaultMessage());
+        }
         return accountService.modifyAccount(accountRequestDto);
     }
 }
