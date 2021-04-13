@@ -21,6 +21,7 @@ import java.util.List;
 @Service
 public class PostService {
     private final PostRepository postRepository;
+
     //게시글 가져오기
     public Page<PostResponseDto> getPost(int page, int size){
         PageRequest pageRequest = PageRequest.of(page -1, size , Sort.by(Sort.Direction.DESC, "createdAt"));
@@ -32,7 +33,10 @@ public class PostService {
     //게시글 쓰기
     @Transactional
     public Post createPost(PostRequestDto postRequestDto, Account account){
-        Post post = Post.builder().content(postRequestDto.getContent()).imgUrl(postRequestDto.getImgUrl()).build();
+        Post post = Post.builder()
+                .content(postRequestDto.getContent())
+                .imgUrl(postRequestDto.getImgUrl())
+                .build();
         Post newPost = postRepository.save(post);
         newPost.addAccount(account);
         return newPost;
@@ -40,7 +44,7 @@ public class PostService {
     }
     //게시글 수정
     @Transactional
-    public void update(Long post_id, PostRequestDto postRequestDto){
+    public void updatePost(Long post_id, PostRequestDto postRequestDto){
         Post post = postRepository.findById(post_id).orElseThrow(() -> new IllegalArgumentException("없는 게시글 아이디 입니다."));
         post.update(postRequestDto);
     }

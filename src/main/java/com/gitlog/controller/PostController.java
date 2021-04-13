@@ -28,21 +28,17 @@ public class PostController {
         return postService.getPost(page, size);
     }
 
-//    @GetMapping("/story/{account_id}")
-//    public List<Post> getUserStory(@PathVariable Long account_id){
-//        return postService.getUserStory(account_id);
-//    }
-
     //게시글 작성
     @PostMapping("/api/posts")
-    public void writePost(@RequestBody PostRequestDto postRequestDto, @AuthenticationPrincipal UserDetailsImpl userDetails) {
+    public ResponseEntity writePost(@RequestBody PostRequestDto postRequestDto, @AuthenticationPrincipal UserDetailsImpl userDetails) {
         postService.createPost(postRequestDto, userDetails.getAccount());
+        return ResponseEntity.ok().build();
     }
 
     //게시글 수정
     @PutMapping("/api/posts/{post_id}")
     public void updatePost(@PathVariable Long post_id, @RequestBody PostRequestDto postRequestDto) {
-        postService.update(post_id, postRequestDto);
+        postService.updatePost(post_id, postRequestDto);
     }
 
     @DeleteMapping("/api/posts/{post_id}")

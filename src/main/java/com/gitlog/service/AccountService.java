@@ -17,6 +17,7 @@ public class AccountService {
     private final AccountRepository accountRepository;
     private final PasswordEncoder passwordEncoder;
 
+    //이메일 중복크 체크
     public int isDuplicateEmail(AccountRequestDto accountRequestDto){
         String email = accountRequestDto.getEmail();
         Optional<Account> found = accountRepository.findByEmail(email);
@@ -27,7 +28,7 @@ public class AccountService {
             return 0;
         }
     }
-
+    //닉네임 중복 체크
     public int nickname_check(AccountRequestDto accountRequestDto){
         String nickname = accountRequestDto.getNickname();
         Optional<Account> found = accountRepository.findByNickname(nickname);
@@ -37,8 +38,18 @@ public class AccountService {
         return 0;
     }
 
-    //사용자 추
+    //사용자 추가
     public Account registerUser(AccountRequestDto accountRequestDto){
+        String nickname = accountRequestDto.getNickname();
+        Optional<Account> account_found = accountRepository.findByNickname(nickname);
+        if (account_found.isPresent()){
+            throw new IllegalArgumentException("이미 사용중인 사용자 이름입니다.");
+        }
+        String email = accountRequestDto.getEmail();
+        Optional<Account> email_found = accountRepository.findByEmail(email);
+        if (email_found.isPresent()){
+            throw new IllegalArgumentException("이미 사용중인 이메일 입니다.");
+        }
         return accountRepository.save(
                 Account.builder()
                 .nickname(accountRequestDto.getNickname())
