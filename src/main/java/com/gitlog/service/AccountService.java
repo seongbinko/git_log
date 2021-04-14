@@ -62,10 +62,18 @@ public class AccountService {
     //사용자 수정
     public ResponseEntity modifyAccount(MultipartFile file, String githubUrl, String bio, String password, UserDetailsImpl userDetails) throws IOException {
         String imgUrl = uploader.upload(file, "static");
-        passwordEncoder.encode(password);
-        Account account = userDetails.getAccount();
-        account.update(password,githubUrl,bio,imgUrl);
-        return new ResponseEntity<>("성공적으로 수정하였습니다", HttpStatus.OK);
+        System.out.println(userDetails.getAccount().getNickname());
+        Account account = accountRepository.findByNickname(userDetails.getAccount().getNickname()).orElse(null);
+        System.out.println(account);
+        System.out.println(githubUrl);
+        System.out.println(bio);
+        System.out.println(imgUrl);
+        if (account != null) {
+            account.update(passwordEncoder.encode(password), githubUrl, bio, imgUrl);
+            System.out.println(account);
+            return new ResponseEntity<>("수정 완료 하였습니다",HttpStatus.OK);
+        }
+        return new ResponseEntity<>("없는 사용자 입니다.", HttpStatus.BAD_REQUEST);
     }
 
     public Account login(LoginRequestDto loginRequestDto){

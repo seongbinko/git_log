@@ -66,9 +66,10 @@ public class AccountController {
 
     }
 
-    @PostMapping("/api/profile")
-    public ResponseEntity<String> upload(@AuthenticationPrincipal UserDetailsImpl userDetails, @RequestParam("data") MultipartFile file, @RequestParam("bio") String bio, @RequestParam("githubUrl") String githubUrl, @RequestParam("password") String password) throws IOException{
-        return accountService. modifyAccount(file, githubUrl,bio, password, userDetails);
+    @PutMapping("/api/profile")
+    public ResponseEntity upload(@AuthenticationPrincipal UserDetailsImpl userDetails, @RequestParam("data") MultipartFile file, @RequestParam(value = "bio", required = false) String bio, @RequestParam(value = "githubUrl", required = false) String githubUrl, @RequestParam(value = "password", required = false) String password)throws IOException{
+        return accountService.modifyAccount(file, githubUrl,bio, password, userDetails);
+
     }
 
     //회원가입
