@@ -1,5 +1,7 @@
 package com.gitlog.service;
 
+import com.gitlog.config.UserDetailsImpl;
+import com.gitlog.config.uploader.Uploader;
 import com.gitlog.dto.LoginRequestDto;
 import com.gitlog.dto.AccountRequestDto;
 import com.gitlog.model.Account;
@@ -12,6 +14,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
+import java.io.IOException;
 import java.util.Collections;
 import java.util.Optional;
 
@@ -20,6 +23,7 @@ import java.util.Optional;
 public class AccountService {
     private final AccountRepository accountRepository;
     private final PasswordEncoder passwordEncoder;
+    private final Uploader uploader;
 
     //이메일 중복크 체크
     public ResponseEntity<String> isDuplicateEmail(AccountRequestDto accountRequestDto){
@@ -56,11 +60,11 @@ public class AccountService {
         );
     }
     //사용자 수정
-    public ResponseEntity modifyAccount(AccountRequestDto accountRequestDto){
-        String githubUrl = accountRequestDto.getGithubUrl();
-        String bio = accountRequestDto.getBio();
-        Account account = accountRepository.findByNickname(accountRequestDto.getNickname()).orElse(null);
-        account.update(account.getPassword(), account.getGithubUrl(), account.getBio(), account.getImgUrl());
+    public ResponseEntity modifyAccount(MultipartFile file, String githubUrl, String bio, String password, UserDetailsImpl userDetails) throws IOException {
+        String imgUrl = uploader.upload(file, "static");
+        passwordEncoder.encode(password);
+        Account account = userDetails.getAccount();
+        account.update(password,githubUrl,bio,imgUrl);
         return new ResponseEntity<>("성공적으로 수정하였습니다", HttpStatus.OK);
     }
 

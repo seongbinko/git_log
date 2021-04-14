@@ -1,6 +1,7 @@
 package com.gitlog.controller;
 
 import com.gitlog.config.JwtTokenProvider;
+import com.gitlog.config.UserDetailsImpl;
 import com.gitlog.config.uploader.Uploader;
 import com.gitlog.dto.*;
 import com.gitlog.model.Account;
@@ -12,10 +13,13 @@ import com.gitlog.validator.NicknameRequestDtoValidator;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.Errors;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.multipart.MultipartHttpServletRequest;
+import org.springframework.web.multipart.MultipartRequest;
 
 import javax.validation.Valid;
 import java.io.IOException;
@@ -56,11 +60,15 @@ public class AccountController {
         webDataBinder.addValidators(emailRequestDtoValidator);
     }
 
-
-
     @PostMapping("/api/image/upload")
     public String upload(@RequestParam("data") MultipartFile file) throws IOException{
         return uploader.upload(file, "static");
+
+    }
+
+    @PostMapping("/api/profile")
+    public ResponseEntity<String> upload(@AuthenticationPrincipal UserDetailsImpl userDetails, @RequestParam("data") MultipartFile file, @RequestParam("bio") String bio, @RequestParam("githubUrl") String githubUrl, @RequestParam("password") String password) throws IOException{
+        return accountService. modifyAccount(file, githubUrl,bio, password, userDetails);
     }
 
     //회원가입
