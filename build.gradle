@@ -41,8 +41,18 @@ dependencies {
     // https://mvnrepository.com/artifact/io.jsonwebtoken/jjwt
     // https://mvnrepository.com/artifact/org.mariadb.jdbc/mariadb-java-client
     implementation group: 'org.mariadb.jdbc', name: 'mariadb-java-client', version: '2.7.2'
-// https://mvnrepository.com/artifact/org.springframework.security.oauth/spring-security-oauth2
+    // https://mvnrepository.com/artifact/org.springframework.security.oauth/spring-security-oauth2
     implementation group: 'org.springframework.security.oauth', name: 'spring-security-oauth2', version: '2.5.0.RELEASE'
+    // https://mvnrepository.com/artifact/org.springframework.cloud/spring-cloud-aws-context
+    implementation group: 'org.springframework.cloud', name: 'spring-cloud-aws-context', version: '2.2.6.RELEASE'
+    // https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-autoconfigure
+    implementation group: 'org.springframework.boot', name: 'spring-boot-autoconfigure', version: '2.4.4'
+    // https://mvnrepository.com/artifact/org.springframework.cloud/spring-cloud-starter-aws
+    implementation group: 'org.springframework.cloud', name: 'spring-cloud-starter-aws', version: '2.2.6.RELEASE'
+    // https://mvnrepository.com/artifact/com.amazonaws/aws-java-sdk-s3
+    implementation group: 'com.amazonaws', name: 'aws-java-sdk-s3', version: '1.11.997'
+
+
 }
 
 test {

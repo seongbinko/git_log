@@ -1,6 +1,7 @@
 package com.gitlog.controller;
 
 import com.gitlog.config.JwtTokenProvider;
+import com.gitlog.config.uploader.Uploader;
 import com.gitlog.dto.*;
 import com.gitlog.model.Account;
 import com.gitlog.service.AccountService;
@@ -14,14 +15,17 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.Errors;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
+import java.io.IOException;
 
 @RequiredArgsConstructor
 @RestController
 public class AccountController {
     private final AccountService accountService;
     private final JwtTokenProvider jwtTokenProvider;
+    private final Uploader uploader;
 
     private final AccountRequestDtoValidator accountRequestDtoValidator;
     private final LoginRequestDtoValidator loginRequestDtoValidator;
@@ -52,12 +56,25 @@ public class AccountController {
         webDataBinder.addValidators(emailRequestDtoValidator);
     }
 
+
+
+    @PostMapping("/api/image/upload")
+    public String upload(@RequestParam("data") MultipartFile file) throws IOException{
+        return uploader.upload(file, "static");
+    }
+
     //회원가입
     @PostMapping("/api/signup")
-    public ResponseEntity<String> registerAccount(@Valid @RequestBody AccountRequestDto accountRequestDto, Errors errors) {
+    public ResponseEntity<String> registerAccount(@Valid @RequestBody AccountRequestDto accountRequestDto, Errors errors, @RequestParam("data") MultipartFile file) {
         if (errors.hasErrors()) {
             return ResponseEntity.badRequest().body(errors.getFieldError().getDefaultMessage());
         } else {
+            try {
+                uploader.upload(file, "static");
+            } catch (IOException e) {
+                e.getSuppressed();
+            }
+
             accountService.registerAccount(accountRequestDto);
             return new ResponseEntity<>("성공적으로 등록 하였습니다", HttpStatus.OK);
         }

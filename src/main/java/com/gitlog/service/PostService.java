@@ -47,6 +47,7 @@ public class PostService {
         if (post == null){
             return new ResponseEntity<>("해당 게시글은 없는 게시글입니다.", HttpStatus.BAD_REQUEST);
         }
+
         post.update(postRequestDto);
         return new ResponseEntity<>("성공적으로 수정하였습니다", HttpStatus.OK);
     }

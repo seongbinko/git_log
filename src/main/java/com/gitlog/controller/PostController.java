@@ -39,7 +39,7 @@ public class PostController {
     public ResponseEntity updatePost(@PathVariable Long post_id, @RequestBody PostRequestDto postRequestDto) {
         return postService.updatePost(post_id, postRequestDto);
     }
-
+    //게시글 삭제
     @DeleteMapping("/api/posts/{post_id}")
     public void deletePost(@PathVariable Long post_id) {
         postService.deletePost(post_id);
