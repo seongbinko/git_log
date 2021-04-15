@@ -1,6 +1,7 @@
 package com.gitlog.service;
 
 import com.gitlog.dto.AccountRequestDto;
+import com.gitlog.dto.ProfileRequestDto;
 import com.gitlog.model.Account;
 import com.gitlog.repository.AccountRepository;
 import lombok.RequiredArgsConstructor;
@@ -30,5 +31,10 @@ public class AccountService {
                         .roles(Collections.singletonList("ROLE_USER"))
                         .build()
         );
+    }
+
+    public void uploadProfile(ProfileRequestDto profileRequestDto, String profileImgUrl, Account account) {
+        profileRequestDto.setPassword(passwordEncoder.encode(profileRequestDto.getPassword()));
+        account.updateProfile(profileRequestDto, profileImgUrl);
     }
 }

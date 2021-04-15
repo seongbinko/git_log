@@ -1,6 +1,8 @@
 package com.gitlog.model;
 
+import com.gitlog.dto.ProfileRequestDto;
 import lombok.*;
+import org.springframework.util.StringUtils;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -51,4 +53,10 @@ public class Account extends BaseTimeEntity {
     @Builder.Default
     List<Heart> hearts = new ArrayList<>();
 
+    public void updateProfile(ProfileRequestDto profileRequestDto, String profileImgUrl) {
+        this.password = StringUtils.hasText(profileRequestDto.getPassword()) ? profileRequestDto.getPassword() : this.password;
+        this.bio = StringUtils.hasText(profileRequestDto.getBio()) ? profileRequestDto.getBio() : this.bio;
+        this.profileImgUrl = StringUtils.hasText(profileImgUrl) ? profileImgUrl : this.profileImgUrl;
+        this.githubUrl = StringUtils.hasText(profileRequestDto.getGithubUrl()) ? profileRequestDto.getGithubUrl() :this.githubUrl;
+    }
 }

@@ -1,26 +1,20 @@
 package com.gitlog.controller;
 
 import com.gitlog.config.JwtTokenProvider;
-import com.gitlog.dto.AccountRequestDto;
-import com.gitlog.dto.EmailRequestDto;
-import com.gitlog.dto.LoginRequestDto;
-import com.gitlog.dto.NicknameRequestDto;
+import com.gitlog.config.UserDetailsImpl;
+import com.gitlog.dto.*;
 import com.gitlog.model.Account;
 import com.gitlog.repository.AccountRepository;
 import com.gitlog.service.AccountService;
-import com.gitlog.validator.AccountRequestDtoValidator;
-import com.gitlog.validator.EmailRequestDtoValidator;
-import com.gitlog.validator.LoginRequestDtoValidator;
-import com.gitlog.validator.NicknameRequestDtoValidator;
+import com.gitlog.service.FileUploadService;
+import com.gitlog.validator.*;
 import com.google.gson.JsonObject;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.Errors;
 import org.springframework.web.bind.WebDataBinder;
-import org.springframework.web.bind.annotation.InitBinder;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 
@@ -29,13 +23,16 @@ import javax.validation.Valid;
 public class AccountController {
 
     private final AccountService accountService;
-    private final JwtTokenProvider jwtTokenProvider;
     private final AccountRepository accountRepository;
+    private final JwtTokenProvider jwtTokenProvider;
+
+    private final FileUploadService fileUploadService;
 
     private final AccountRequestDtoValidator accountRequestDtoValidator;
     private final LoginRequestDtoValidator loginRequestDtoValidator;
     private final EmailRequestDtoValidator emailRequestDtoValidator;
     private final NicknameRequestDtoValidator nicknameRequestDtoValidator;
+    private final ProfileRequestDtoValidator profileRequestDtoValidator;
 
     @InitBinder("accountRequestDto")
     public void signUpBinder(WebDataBinder webDataBinder) {
@@ -50,6 +47,10 @@ public class AccountController {
     @InitBinder("nicknameRequestDto")
     public void nicknameBinder(WebDataBinder webDataBinder) {
         webDataBinder.addValidators(nicknameRequestDtoValidator);
+    }
+    @InitBinder("profileRequestDto")
+    public void profileBinder(WebDataBinder webDataBinder) {
+        webDataBinder.addValidators(profileRequestDtoValidator);
     }
 
     @InitBinder("loginRequestDto")
@@ -92,5 +93,17 @@ public class AccountController {
         JsonObject obj = new JsonObject();
         obj.addProperty("token", jwtTokenProvider.createToken(account.getNickname(), account.getRoles()));
         return ResponseEntity.ok().body(obj.toString());
+    }
+
+    @PostMapping("/api/settings")
+    public ResponseEntity uploadProfile(@AuthenticationPrincipal UserDetailsImpl userDetails, @Valid @ModelAttribute ProfileRequestDto profileRequestDto, Errors errors) {
+        if(errors.hasErrors()) {
+            return ResponseEntity.badRequest().body(errors.getAllErrors());
+        }
+        Account account = accountRepository.findByNickname(userDetails.getUsername()).orElse(null);
+
+        String profileImgUrl = fileUploadService.uploadImage(profileRequestDto.getProfileImg());
+        accountService.uploadProfile(profileRequestDto, profileImgUrl, account);
+        return ResponseEntity.ok().build();
     }
 }
