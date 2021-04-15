@@ -41,7 +41,9 @@ public class CommentController {
                 comment -> new CommentResponseDto(
                         comment.getId(),
                         comment.getContent(),
-                        comment.getCreatedBy())).collect(Collectors.toList());
+                        comment.getCreatedAt(),
+                        comment.getCreatedBy()
+                        )).collect(Collectors.toList());
 
         return ResponseEntity.ok().body(toList);
     }

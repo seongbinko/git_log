@@ -1,6 +1,8 @@
 package com.gitlog.controller;
 
 import com.gitlog.config.UserDetailsImpl;
+import com.gitlog.dto.AccountResponseDto;
+import com.gitlog.dto.CommentResponseDto;
 import com.gitlog.dto.PostRequestDto;
 import com.gitlog.dto.PostResponseDto;
 import com.gitlog.model.Account;
@@ -20,7 +22,9 @@ import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @RestController
@@ -32,6 +36,7 @@ public class PostController {
     private final AccountRepository accountRepository;
     private final HeartRepository heartRepository;
 
+    // Todo 성능 개선
     @GetMapping("/story/{nickname}")
     public ResponseEntity readPostsByNickname(
             @PathVariable String nickname
@@ -40,14 +45,42 @@ public class PostController {
         if(account == null) {
             return ResponseEntity.badRequest().build();
         }
-
+        AccountResponseDto accountResponseDto = new AccountResponseDto(
+                account.getNickname(),
+                account.getBio(),
+                account.getProfileImgUrl(),
+                account.getGithubUrl()
+        );
         List<Post> posts = postRepository.findByAccountOrderByCreatedAtDesc(account);
-        List<PostResponseDto> toList = posts.stream().map(post ->
-                new PostResponseDto(post.getId(),post.getContent(), post.getImgUrl(), post.getCreatedBy()))
-                .collect(Collectors.toList());
-        return ResponseEntity.ok().body(toList);
+        List<PostResponseDto> toList = posts.stream().map(
+                post -> new PostResponseDto(
+                        post.getId(),
+                        post.getContent(),
+                        post.getImgUrl(),
+                        post.getCreatedAt(),
+                        post.getCreatedBy(),
+                        post.getModifiedAt(),
+                        post.getComments().stream().map(
+                                comment -> new CommentResponseDto(
+                                        comment.getId(),
+                                        comment.getContent(),
+                                        comment.getCreatedAt(),
+                                        comment.getCreatedBy(),
+                                        new AccountResponseDto(comment.getAccount().getProfileImgUrl())
+                                )
+                        ).collect(Collectors.toList()),
+                        new AccountResponseDto(post.getAccount().getProfileImgUrl()),
+                        post.getComments().size(),
+                        post.getHearts().size()
+                )).collect(Collectors.toList());
+
+        Map<String, Object> map = new HashMap<>();
+        map.put("account", accountResponseDto);
+        map.put("posts", toList);
+        return ResponseEntity.ok().body(map);
     }
 
+    // Todo 성능 개선
     @GetMapping("/api/posts")
     public Page<PostResponseDto> readPosts(
             @RequestParam("page") int page,
@@ -55,7 +88,26 @@ public class PostController {
     ) {
         PageRequest pageRequest = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "createdAt"));
         Page<Post> posts = postRepository.findAll(pageRequest);
-        Page<PostResponseDto> toMap = posts.map(post -> new PostResponseDto(post.getId(), post.getContent(), post.getImgUrl(), post.getCreatedBy()));
+        Page<PostResponseDto> toMap = posts.map(post -> new PostResponseDto(
+                post.getId(),
+                post.getContent(),
+                post.getImgUrl(),
+                post.getCreatedAt(),
+                post.getCreatedBy(),
+                post.getModifiedAt(),
+                post.getComments().stream().map(
+                    comment -> new CommentResponseDto(
+                            comment.getId(),
+                            comment.getContent(),
+                            comment.getCreatedAt(),
+                            comment.getCreatedBy(),
+                            new AccountResponseDto(comment.getAccount().getProfileImgUrl())
+                    )
+                ).collect(Collectors.toList()),
+                new AccountResponseDto(post.getAccount().getProfileImgUrl()),
+                post.getComments().size(),
+                post.getHearts().size()
+        ));
         return toMap;
     }
 

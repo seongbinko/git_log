@@ -12,7 +12,7 @@ import java.util.List;
 @Builder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)// protected로 기본생성자 생성
 @AllArgsConstructor
-@ToString(of = {"id", "nickname", "email", "bio", "imgUrl", "githubUrl"})
+@ToString(of = {"id", "nickname", "email", "bio", "profileImgUrl", "githubUrl"})
 //password, bio, github_url, img_url
 public class Account extends BaseTimeEntity {
 
@@ -29,7 +29,7 @@ public class Account extends BaseTimeEntity {
 
     private String bio;
 
-    private String imgUrl;
+    private String profileImgUrl;
 
     private String githubUrl;
 
