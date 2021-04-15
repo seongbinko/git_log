@@ -18,13 +18,6 @@ public class CommentService {
     private final PostRepository postRepository;
 
 
-//    public HashMap<String, Object> readComment(Long post_id){
-//        List<Comment> comments = commentRepository.findAllByPostIdOrderByCreatedAtDesc(post_id);
-//        HashMap<String, Object> map = new HashMap<>();
-//        map.put("comments", comments);
-//        return map;
-//    }
-
     public ResponseEntity<String> writeComment(Long post_id, CommentRequestDto commentRequestDto, Account account){
         Post post = postRepository.findById(post_id).orElse(null);
         if (post == null){

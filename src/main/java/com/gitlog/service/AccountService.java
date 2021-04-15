@@ -26,7 +26,7 @@ public class AccountService {
     private final PasswordEncoder passwordEncoder;
     private final Uploader uploader;
 
-    //이메일 중복크 체크
+    //이메일 중복 체크
     public ResponseEntity<String> isDuplicateEmail(AccountRequestDto accountRequestDto){
         String email = accountRequestDto.getEmail();
         Optional<Account> found = accountRepository.findByEmail(email);
@@ -35,6 +35,7 @@ public class AccountService {
         }
         return new ResponseEntity<>("이미 사용중인 이메일 주소입니다",HttpStatus.OK);
     }
+
     //닉네임 중복 체크
     public ResponseEntity<String> nickname_check(AccountRequestDto accountRequestDto){
         String nickname = accountRequestDto.getNickname();
@@ -61,24 +62,24 @@ public class AccountService {
                 .build()
         );
     }
+
     //사용자 수정
     @Transactional
     public ResponseEntity modifyAccount(MultipartFile file, String githubUrl, String bio, String password, UserDetailsImpl userDetails) throws IOException {
         String imgUrl = uploader.upload(file, "static");
-        System.out.println(userDetails.getAccount().getNickname());
         Account account = accountRepository.findByNickname(userDetails.getAccount().getNickname()).orElse(null);
-        System.out.println(account);
-        System.out.println(githubUrl);
-        System.out.println(bio);
-        System.out.println(imgUrl);
         if (account != null) {
-            account.update(passwordEncoder.encode(password), githubUrl, bio, imgUrl);
-            System.out.println(account);
+            if(password == null){
+                account.update(userDetails.getPassword(), githubUrl, bio, imgUrl);
+            }else {
+                account.update(passwordEncoder.encode(password), githubUrl, bio, imgUrl);
+            }
             return new ResponseEntity<>("수정 완료 하였습니다",HttpStatus.OK);
         }
         return new ResponseEntity<>("없는 사용자 입니다.", HttpStatus.BAD_REQUEST);
     }
 
+    //login
     public Account login(LoginRequestDto loginRequestDto){
         return accountRepository.findByNickname(loginRequestDto.getNickname()).orElse(null);
     }

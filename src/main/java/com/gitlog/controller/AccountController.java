@@ -60,10 +60,10 @@ public class AccountController {
         webDataBinder.addValidators(emailRequestDtoValidator);
     }
 
-
+    //사용자 정보 수
     @PutMapping("/api/profile")
-    public ResponseEntity upload(@AuthenticationPrincipal UserDetailsImpl userDetails, @RequestParam("data") MultipartFile file, @RequestParam(value = "bio", required = false) String bio, @RequestParam(value = "githubUrl", required = false) String githubUrl, @RequestParam(value = "password", required = false) String password)throws IOException{
-        return accountService.modifyAccount(file, githubUrl,bio, password, userDetails);
+    public ResponseEntity upload(@AuthenticationPrincipal UserDetailsImpl userDetails, @RequestParam("data") MultipartFile file, @RequestParam(value = "bio", required = false) String bio, @RequestParam(value = "githubUrl", required = false) String githubUrl, @RequestParam(value = "password", required = false) String password) throws IOException {
+        return accountService.modifyAccount(file, githubUrl, bio, password, userDetails);
 
     }
 
@@ -111,13 +111,4 @@ public class AccountController {
         }
         return new ResponseEntity<>("사용 가능한 이메일 입니다", HttpStatus.OK);
     }
-
-    //사용자 수정
-//    @PutMapping("/api/profile")
-//    public ResponseEntity<String> modifyAccount(@Valid @RequestBody AccountUpdateDto accountUpdateDto, Errors errors) {
-//        if (errors.hasErrors()){
-//            return ResponseEntity.badRequest().body(errors.getFieldError().getDefaultMessage());
-//        }
-//        return accountService.modifyAccount(accountUpdateDto);
-//    }
 }

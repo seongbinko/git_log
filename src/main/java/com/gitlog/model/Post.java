@@ -46,8 +46,8 @@ public class Post extends BaseEntity{
         this.account = account;
     }
 
-    public void update(PostRequestDto postRequestDto){
-        this.content = postRequestDto.getContent();
-        this.imgUrl = postRequestDto.getImgUrl();
+    public void update(String imgUrl, String content){
+        this.content = content;
+        this.imgUrl = imgUrl;
     }
 }

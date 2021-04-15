@@ -12,7 +12,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
 
 @RequiredArgsConstructor
@@ -24,20 +26,21 @@ public class PostController {
     //게시글 가져오기
     @GetMapping("/api/posts")
     public Page<PostResponseDto> getPosts(@RequestParam("page") int page,
-                                          @RequestParam("size") int size) {
-        return postService.getPost(page, size);
+                                          @RequestParam("size") int size,
+                                          @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        return postService.getPost(page, size, userDetails);
     }
 
     //게시글 작성
     @PostMapping("/api/posts")
-    public ResponseEntity writePost(@RequestBody PostRequestDto postRequestDto, @AuthenticationPrincipal UserDetailsImpl userDetails) {
-        return postService.createPost(postRequestDto, userDetails.getAccount());
+    public ResponseEntity writePost(@RequestParam("data")MultipartFile file, @RequestParam("content") String content, @AuthenticationPrincipal UserDetailsImpl userDetails) throws IOException {
+        return postService.createPost(file, content, userDetails.getAccount());
     }
 
     //게시글 수정
     @PutMapping("/api/posts/{post_id}")
-    public ResponseEntity updatePost(@PathVariable Long post_id, @RequestBody PostRequestDto postRequestDto) {
-        return postService.updatePost(post_id, postRequestDto);
+    public ResponseEntity updatePost(@AuthenticationPrincipal UserDetailsImpl userDetails, @PathVariable Long post_id, @RequestParam("data")MultipartFile file, @RequestParam("content") String content ) throws IOException {
+        return postService.updatePost(post_id, file, content, userDetails);
     }
     //게시글 삭제
     @DeleteMapping("/api/posts/{post_id}")
