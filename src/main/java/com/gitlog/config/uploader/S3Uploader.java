@@ -3,9 +3,7 @@ package com.gitlog.config.uploader;
 import com.amazonaws.services.s3.AmazonS3Client;
 import com.amazonaws.services.s3.model.CannedAccessControlList;
 import com.amazonaws.services.s3.model.PutObjectRequest;
-import com.gitlog.model.Account;
 import lombok.RequiredArgsConstructor;
-import lombok.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 

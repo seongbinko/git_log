@@ -60,11 +60,6 @@ public class AccountController {
         webDataBinder.addValidators(emailRequestDtoValidator);
     }
 
-    @PostMapping("/api/image/upload")
-    public String upload(@RequestParam("data") MultipartFile file) throws IOException{
-        return uploader.upload(file, "static");
-
-    }
 
     @PutMapping("/api/profile")
     public ResponseEntity upload(@AuthenticationPrincipal UserDetailsImpl userDetails, @RequestParam("data") MultipartFile file, @RequestParam(value = "bio", required = false) String bio, @RequestParam(value = "githubUrl", required = false) String githubUrl, @RequestParam(value = "password", required = false) String password)throws IOException{

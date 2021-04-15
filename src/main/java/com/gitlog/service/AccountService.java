@@ -13,6 +13,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.transaction.Transactional;
 import javax.validation.Valid;
 import java.io.IOException;
 import java.util.Collections;
@@ -46,6 +47,7 @@ public class AccountService {
 
 
     //사용자 추가
+    @Transactional
     public Account registerAccount(@Valid AccountRequestDto accountRequestDto){
 
         return accountRepository.save(
@@ -60,6 +62,7 @@ public class AccountService {
         );
     }
     //사용자 수정
+    @Transactional
     public ResponseEntity modifyAccount(MultipartFile file, String githubUrl, String bio, String password, UserDetailsImpl userDetails) throws IOException {
         String imgUrl = uploader.upload(file, "static");
         System.out.println(userDetails.getAccount().getNickname());
