@@ -13,7 +13,7 @@ import javax.persistence.*;
 @NoArgsConstructor(access = AccessLevel.PROTECTED) // protected로 기본생성자 생성
 @AllArgsConstructor
 @ToString(of = {"id", "content"})
-public class Comment extends BaseTimeEntity{
+public class Comment extends BaseEntity{
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

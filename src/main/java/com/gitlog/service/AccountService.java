@@ -66,13 +66,13 @@ public class AccountService {
     //사용자 수정
     @Transactional
     public ResponseEntity modifyAccount(MultipartFile file, String githubUrl, String bio, String password, UserDetailsImpl userDetails) throws IOException {
-        String imgUrl = uploader.upload(file, "static");
+        String profileImgUrl = uploader.upload(file, "static");
         Account account = accountRepository.findByNickname(userDetails.getAccount().getNickname()).orElse(null);
         if (account != null) {
             if(password == null){
-                account.update(userDetails.getPassword(), githubUrl, bio, imgUrl);
+                account.update(userDetails.getPassword(), githubUrl, bio, profileImgUrl);
             }else {
-                account.update(passwordEncoder.encode(password), githubUrl, bio, imgUrl);
+                account.update(passwordEncoder.encode(password), githubUrl, bio, profileImgUrl);
             }
             return new ResponseEntity<>("수정 완료 하였습니다",HttpStatus.OK);
         }

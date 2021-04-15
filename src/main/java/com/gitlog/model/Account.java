@@ -31,7 +31,7 @@ public class Account extends BaseTimeEntity {
 
     private String bio;
 
-    private String imgUrl;
+    private String profileImgUrl;
 
     private String githubUrl;
 
@@ -49,10 +49,10 @@ public class Account extends BaseTimeEntity {
     // @JsonIgnore entity를 직접 노출할 경우 필요
     List<Comment> comments = new ArrayList<>();
 
-    public void update(String password, String githubUrl, String bio, String imgUrl){
+    public void update(String password, String githubUrl, String bio, String profileImgUrl){
         this.password = password;
         this.githubUrl = githubUrl;
         this.bio = bio;
-        this.imgUrl = imgUrl;
+        this.profileImgUrl = profileImgUrl;
     }
 }

@@ -3,11 +3,15 @@ package com.gitlog.service;
 import com.amazonaws.services.s3.transfer.Upload;
 import com.gitlog.config.UserDetailsImpl;
 import com.gitlog.config.uploader.Uploader;
+import com.gitlog.dto.AccountResponseDto;
+import com.gitlog.dto.CommentResponseDto;
 import com.gitlog.dto.PostRequestDto;
 import com.gitlog.dto.PostResponseDto;
 import com.gitlog.model.Account;
+import com.gitlog.model.Comment;
 import com.gitlog.model.Post;
 import com.gitlog.repository.AccountRepository;
+import com.gitlog.repository.CommentRepository;
 import com.gitlog.repository.PostRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -21,12 +25,14 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.transaction.Transactional;
 import java.io.IOException;
+import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Service
 public class PostService {
     private final AccountRepository accountRepository;
     private final PostRepository postRepository;
+    private final CommentRepository commentRepository;
     private final Uploader uploader;
 
     //게시글 가져오기
@@ -34,7 +40,26 @@ public class PostService {
         PageRequest pageRequest = PageRequest.of(page -1, size , Sort.by(Sort.Direction.DESC, "createdAt"));
         Page<Post> posts = postRepository.findAll(pageRequest);
         Account account = accountRepository.findByNickname(userDetails.getUsername()).orElse(null);
-        Page<PostResponseDto> toMap = posts.map(post -> new PostResponseDto(post.getId(), post.getContent(), post.getImgUrl(), post.getCreatedBy(),account.getImgUrl()));
+        Page<PostResponseDto> toMap = posts.map(post -> new PostResponseDto(
+                post.getId(),
+                post.getContent(),
+                post.getImgUrl(),
+                post.getCreatedAt(),
+                post.getCreatedBy(),
+                post.getModifiedAt(),
+                post.getComments().stream().map(
+                        comment -> new CommentResponseDto(
+                                comment.getId(),
+                                comment.getContent(),
+                                comment.getCreatedAt(),
+                                comment.getCreatedBy(),
+                                new AccountResponseDto(comment.getAccount().getProfileImgUrl())
+                        )
+                ).collect(Collectors.toList()),
+                new AccountResponseDto(post.getAccount().getProfileImgUrl()),
+                post.getComments().size(),
+                post.getHearts().size()
+                ));
         return toMap;
     }
 
