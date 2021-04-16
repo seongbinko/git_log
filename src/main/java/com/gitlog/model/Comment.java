@@ -32,4 +32,8 @@ public class Comment extends BaseEntity{
 //    @JsonIgnore
     private Post post;
 
+    public void updateComment(String content){
+        this.content = content;
+    }
+
 }

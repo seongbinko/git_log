@@ -46,8 +46,7 @@ public class PostController {
     }
     //게시글 삭제
     @DeleteMapping("/api/posts/{post_id}")
-    public void deletePost(@PathVariable Long post_id) {
-        postService.deletePost(post_id);
+    public ResponseEntity<String> deletePost(@PathVariable Long post_id) {
+        return postService.deletePost(post_id);
     }
-
 }

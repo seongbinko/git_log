@@ -24,13 +24,13 @@ public class CommentController {
         return commentService.writeComment(post_id, commentRequestDto, userDetails.getAccount());
     }
     @PutMapping("/api/posts/{post_id}/comments/{comment_id}")
-    public ResponseEntity<String> updateComent(@PathVariable Long post_id, @PathVariable Long comment_id, @AuthenticationPrincipal UserDetailsImpl userDetails){
-        return commentService.updateComment(post_id, comment_id, userDetails.getAccount());
+    public ResponseEntity<String> updateComment(@PathVariable Long post_id, @PathVariable Long comment_id, @RequestBody CommentRequestDto commentRequestDto, @AuthenticationPrincipal UserDetailsImpl userDetails){
+        return commentService.updateComment(post_id, comment_id, commentRequestDto, userDetails.getAccount());
     }
 
-    //    @DeleteMapping("/api/posts/{post_id}/comments/{comment_id}")
-    //    public void deleteComment(@PathVariable Long post_id, @PathVariable Long comment_id, @AuthenticationPrincipal UserDetailsImpl userDetails){
-    //        commentService.deleteComment(post_id, comment_id, userDetails);
-    //    }
+        @DeleteMapping("/api/posts/{post_id}/comments/{comment_id}")
+        public void deleteComment(@PathVariable Long post_id, @PathVariable Long comment_id, @AuthenticationPrincipal UserDetailsImpl userDetails){
+            commentService.deleteComment(post_id, comment_id, userDetails.getAccount());
+        }
 
 }

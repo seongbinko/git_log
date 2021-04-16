@@ -13,6 +13,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @RequiredArgsConstructor
 @Service
 public class CommentService {
@@ -34,20 +36,38 @@ public class CommentService {
         return new ResponseEntity<>("댓글 작성 완료", HttpStatus.OK);
     }
 
-    public ResponseEntity<String> updateComment(Long post_id, Long comment_id, Account account){
+    public ResponseEntity<String> updateComment(Long post_id, Long comment_id, CommentRequestDto commentRequestDto, Account account){
         Post post = postRepository.findById(post_id).orElse(null);
-        if (account == null){
-            return new ResponseEntity<>("다른 사용자 댓글을 수정할 수 없습니다",HttpStatus.BAD_REQUEST);
-        }else{
-            if (post == null){
-                return new ResponseEntity<>("없는 게시글입니다",HttpStatus.BAD_REQUEST);
-            }else{
-                Comment comment = commentRepository.findById(comment_id).orElse(null);
-                if (comment == null){
-                    return new ResponseEntity<>("없는 댓글입니다",HttpStatus.BAD_REQUEST);
-                }
-            }
-            return new ResponseEntity<>("뎃글 수정 완료", HttpStatus.OK);
+        if (commentRequestDto.getContent() == null || commentRequestDto.getContent().isEmpty()){
+            return new ResponseEntity<>("변경할 내용을 적어 주세요", HttpStatus.BAD_REQUEST);
         }
+        if (post == null){
+            return new ResponseEntity<>("없는 게시글입니다.", HttpStatus.BAD_REQUEST);
+        }
+        Comment comment = commentRepository.findById(comment_id).orElse(null);
+        if (comment == null){
+            return new ResponseEntity<>("없는 댓글입니다", HttpStatus.BAD_REQUEST);
+        }
+        if (!comment.getAccount().getNickname().equals(account.getNickname())){
+            return new ResponseEntity<>("다른 사용자의 댓글을 수정하실 수 없습니다.",HttpStatus.BAD_REQUEST);
+        }
+        comment.updateComment(commentRequestDto.getContent());
+        return new ResponseEntity<>("성공적으로 수정 하였습니다.",HttpStatus.OK);
+    }
+
+    public ResponseEntity<String> deleteComment(Long post_id, Long comment_id, Account account){
+        Post post = postRepository.findById(post_id).orElse(null);
+        if (post == null){
+            return new ResponseEntity<>("없는 게시글입니다.", HttpStatus.BAD_REQUEST);
+        }
+        Comment comment = commentRepository.findById(comment_id).orElse(null);
+        if (comment == null){
+            return new ResponseEntity<>("없는 댓글입니다", HttpStatus.BAD_REQUEST);
+        }
+        if (!comment.getAccount().getNickname().equals(account.getNickname())){
+            return new ResponseEntity<>("다른 사용자의 댓글을 삭제하실 수 없습니다.",HttpStatus.BAD_REQUEST);
+        }
+        commentRepository.deleteById(comment_id);
+        return new ResponseEntity<>("성공적으로 삭제 하였습니다.", HttpStatus.OK);
     }
 }

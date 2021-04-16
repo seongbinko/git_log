@@ -11,7 +11,6 @@ public class CommentResponseDto {
     private String content;
     private String createdBy;
     private LocalDateTime createdAt;
-    private AccountResponseDto accountResponseDto;
 
     public CommentResponseDto(Long id, String content, LocalDateTime createdAt, String createdBy){
         this.id = id;
@@ -20,11 +19,11 @@ public class CommentResponseDto {
         this.createdBy = createdBy;
     }
 
-    public CommentResponseDto(Long id, String content, LocalDateTime createdAt, String createdBy, AccountResponseDto accountResponseDto){
-        this.id = id;
-        this.content = content;
-        this.createdAt = createdAt;
-        this.createdBy = createdBy;
-        this.accountResponseDto = accountResponseDto;
-    }
+//    public CommentResponseDto(Long id, String content, LocalDateTime createdAt, String createdBy, AccountResponseDto accountResponseDto){
+//        this.id = id;
+//        this.content = content;
+//        this.createdAt = createdAt;
+//        this.createdBy = createdBy;
+//        this.accountResponseDto = accountResponseDto;
+//    }
 }

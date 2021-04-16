@@ -52,6 +52,10 @@ public class Account extends BaseTimeEntity {
     // @JsonIgnore entity를 직접 노출할 경우 필요
     List<Comment> comments = new ArrayList<>();
 
+    @OneToMany(mappedBy = "account")
+    @Builder.Default
+    List<Heart> hearts = new ArrayList<>();
+
     public void update(ProfileRequestDto profileRequestDto, String profileImgUrl){
         System.out.println(profileImgUrl);
         this.password = StringUtils.hasText(profileRequestDto.getPassword()) ? profileRequestDto.getPassword() : this.password;

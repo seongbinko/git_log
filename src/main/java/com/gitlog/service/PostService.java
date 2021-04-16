@@ -12,6 +12,7 @@ import com.gitlog.model.Comment;
 import com.gitlog.model.Post;
 import com.gitlog.repository.AccountRepository;
 import com.gitlog.repository.CommentRepository;
+import com.gitlog.repository.HeartRepository;
 import com.gitlog.repository.PostRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -33,6 +34,7 @@ public class PostService {
     private final AccountRepository accountRepository;
     private final PostRepository postRepository;
     private final CommentRepository commentRepository;
+    private final HeartRepository heartRepository;
     private final Uploader uploader;
 
     //게시글 가져오기
@@ -51,8 +53,7 @@ public class PostService {
                                 comment.getId(),
                                 comment.getContent(),
                                 comment.getCreatedAt(),
-                                comment.getCreatedBy(),
-                                new AccountResponseDto(comment.getAccount().getProfileImgUrl())
+                                comment.getCreatedBy()
                         )
                 ).collect(Collectors.toList()),
                 new AccountResponseDto(post.getAccount().getProfileImgUrl()),
@@ -124,6 +125,9 @@ public class PostService {
             return new ResponseEntity<>("해당 게시글은 없는 게시글입니다.", HttpStatus.BAD_REQUEST);
         }
         postRepository.deleteById(post_id);
+        commentRepository.deleteAllByPost(post);
+        heartRepository.deleteAllByPost(post);
+
         return new ResponseEntity<>("성공적으로 삭제하였습니다", HttpStatus.OK);
     }
 }
