@@ -1,6 +1,9 @@
 package com.gitlog.model;
 
+import com.gitlog.dto.ProfileRequestDto;
 import lombok.*;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.persistence.*;
@@ -49,10 +52,11 @@ public class Account extends BaseTimeEntity {
     // @JsonIgnore entity를 직접 노출할 경우 필요
     List<Comment> comments = new ArrayList<>();
 
-    public void update(String password, String githubUrl, String bio, String profileImgUrl){
-        this.password = password;
-        this.githubUrl = githubUrl;
-        this.bio = bio;
-        this.profileImgUrl = profileImgUrl;
+    public void update(ProfileRequestDto profileRequestDto, String profileImgUrl){
+        System.out.println(profileImgUrl);
+        this.password = StringUtils.hasText(profileRequestDto.getPassword()) ? profileRequestDto.getPassword() : this.password;
+        this.githubUrl = StringUtils.hasText(profileRequestDto.getGithubUrl()) ? profileRequestDto.getGithubUrl() : this.githubUrl;
+        this.bio = StringUtils.hasText(profileRequestDto.getBio()) ? profileRequestDto.getBio() : this.bio;
+        this.profileImgUrl = StringUtils.hasText(profileImgUrl) ? profileImgUrl : this.profileImgUrl;
     }
 }

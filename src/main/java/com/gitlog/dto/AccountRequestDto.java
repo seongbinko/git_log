@@ -28,8 +28,6 @@ public class AccountRequestDto {
     @Email
     private String email;
 
-    private MultipartFile imgUrl;
-
     private String bio;
 
     @URL

@@ -37,11 +37,11 @@ public class PostController {
         return postService.createPost(file, content, userDetails.getAccount());
     }
 
-    //게시글 수정
-    @PutMapping("/api/posts/{post_id}")
-    public ResponseEntity updatePost(@AuthenticationPrincipal UserDetailsImpl userDetails, @PathVariable Long post_id, @RequestParam("data")MultipartFile file, @RequestParam("content") String content ) throws IOException {
-        return postService.updatePost(post_id, file, content, userDetails);
-    }
+//    //게시글 수정
+//    @PutMapping("/api/posts/{post_id}")
+//    public ResponseEntity updatePost(@AuthenticationPrincipal UserDetailsImpl userDetails, @PathVariable Long post_id,  ) throws IOException {
+//        return postService.updatePost(post_id, file, content, userDetails);
+//    }
     //게시글 삭제
     @DeleteMapping("/api/posts/{post_id}")
     public void deletePost(@PathVariable Long post_id) {

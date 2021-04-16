@@ -6,10 +6,7 @@ import com.gitlog.config.uploader.Uploader;
 import com.gitlog.dto.*;
 import com.gitlog.model.Account;
 import com.gitlog.service.AccountService;
-import com.gitlog.validator.EmailRequestDtoValidator;
-import com.gitlog.validator.LoginRequestDtoValidator;
-import com.gitlog.validator.AccountRequestDtoValidator;
-import com.gitlog.validator.NicknameRequestDtoValidator;
+import com.gitlog.validator.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -35,6 +32,7 @@ public class AccountController {
     private final LoginRequestDtoValidator loginRequestDtoValidator;
     private final NicknameRequestDtoValidator nicknameRequestDtoValidator;
     private final EmailRequestDtoValidator emailRequestDtoValidator;
+    private final ProfileRequestDtoValidator profileRequestDtoValidator;
 
     //회원가입에 필요한 부분 체크해주는 부분.
     @InitBinder("accountRequestDto")
@@ -60,43 +58,24 @@ public class AccountController {
         webDataBinder.addValidators(emailRequestDtoValidator);
     }
 
-    //사용자 정보 수
-    @PutMapping("/api/profile")
-    public ResponseEntity upload(@AuthenticationPrincipal UserDetailsImpl userDetails, @RequestParam("data") MultipartFile file, @RequestParam(value = "bio", required = false) String bio, @RequestParam(value = "githubUrl", required = false) String githubUrl, @RequestParam(value = "password", required = false) String password) throws IOException {
-        return accountService.modifyAccount(file, githubUrl, bio, password, userDetails);
 
-    }
+    //Actual Code starts here
+
+
 
     //회원가입
     @PostMapping("/api/signup")
-    public ResponseEntity<String> registerAccount(@Valid @RequestBody AccountRequestDto accountRequestDto, Errors errors, @RequestParam("data") MultipartFile file) {
-        if (errors.hasErrors()) {
-            return ResponseEntity.badRequest().body(errors.getFieldError().getDefaultMessage());
-        } else {
-            try {
-                uploader.upload(file, "static");
-            } catch (IOException e) {
-                e.getSuppressed();
-            }
-
-            accountService.registerAccount(accountRequestDto);
-            return new ResponseEntity<>("성공적으로 등록 하였습니다", HttpStatus.OK);
-        }
-    }
-
-    //Jwttoken 발급 로그인
-    @PostMapping("/api/login")
-    public ResponseEntity login(@Valid @RequestBody LoginRequestDto loginRequestDto, Errors errors) {
+    public ResponseEntity<String> registerAccount(@Valid @RequestBody AccountRequestDto accountRequestDto, Errors errors) {
         if (errors.hasErrors()) {
             return ResponseEntity.badRequest().body(errors.getFieldError().getDefaultMessage());
         }
-        Account account = accountService.login(loginRequestDto);
-        return ResponseEntity.ok().body(jwtTokenProvider.createToken(account.getNickname(), account.getRoles()));
+        accountService.registerAccount(accountRequestDto);
+        return new ResponseEntity<>("성공적으로 등록 하였습니다", HttpStatus.OK);
     }
 
     //닉네임 중복확인
     @PostMapping("/api/signup/nickname-check")
-    public ResponseEntity checkNickname(@Valid @RequestBody NicknameRequestDto nicknameRequestDto, Errors errors) {
+    public ResponseEntity<String> checkNickname(@Valid @RequestBody NicknameRequestDto nicknameRequestDto, Errors errors) {
         if (errors.hasErrors()) {
             return ResponseEntity.badRequest().body(errors.getFieldError().getDefaultMessage());
         }
@@ -110,5 +89,23 @@ public class AccountController {
             return ResponseEntity.badRequest().body(errors.getFieldError().getDefaultMessage());
         }
         return new ResponseEntity<>("사용 가능한 이메일 입니다", HttpStatus.OK);
+    }
+
+    //Jwttoken 발급 로그인
+    @PostMapping("/api/login")
+    public ResponseEntity<String> login(@Valid @RequestBody LoginRequestDto loginRequestDto, Errors errors) {
+        if (errors.hasErrors()) {
+            return ResponseEntity.badRequest().body(errors.getFieldError().getDefaultMessage());
+        }
+        Account account = accountService.login(loginRequestDto);
+        return ResponseEntity.ok().body(jwtTokenProvider.createToken(account.getNickname(), account.getRoles()));
+    }
+
+
+
+    //사용자 정보 수정
+    @PutMapping("/api/profile")
+    public ResponseEntity upload(@AuthenticationPrincipal UserDetailsImpl userDetails, @Valid @ModelAttribute ProfileRequestDto profileRequestDto)throws IOException{
+        return accountService.modifyAccount(profileRequestDto, userDetails);
     }
 }
