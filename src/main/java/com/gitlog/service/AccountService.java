@@ -32,7 +32,6 @@ public class AccountService {
                         .build()
         );
     }
-
     public void uploadProfile(ProfileRequestDto profileRequestDto, String profileImgUrl, Account account) {
         profileRequestDto.setPassword(passwordEncoder.encode(profileRequestDto.getPassword()));
         account.updateProfile(profileRequestDto, profileImgUrl);

@@ -1,6 +1,5 @@
 package com.gitlog.model;
 
-import com.gitlog.dto.PostRequestDto;
 import com.gitlog.dto.PostUpdateRequestDto;
 import lombok.*;
 import org.springframework.util.StringUtils;
@@ -51,7 +50,9 @@ public class Post extends BaseEntity{
     }
 
     public void deletePost(Post post) {
-        //post.getAccount().getPosts().remove(this);
+        post.getAccount().getPosts().remove(this);
+        post.getComments().removeAll(this.comments);
+        post.getHearts().removeAll(this.hearts);
         this.account = null;
         this.comments.clear();
         this.hearts.clear();

@@ -102,7 +102,13 @@ public class AccountController {
         }
         Account account = accountRepository.findByNickname(userDetails.getUsername()).orElse(null);
 
-        String profileImgUrl = fileUploadService.uploadImage(profileRequestDto.getProfileImg());
+        String profileImgUrl = null;
+        if(profileRequestDto.getProfileImg() != null) {
+            if(account.getProfileImgUrl() != null) {
+                fileUploadService.removeImage(account.getProfileImgUrl());
+            }
+            profileImgUrl = fileUploadService.uploadImage(profileRequestDto.getProfileImg());
+        }
         accountService.uploadProfile(profileRequestDto, profileImgUrl, account);
         return ResponseEntity.ok().build();
     }

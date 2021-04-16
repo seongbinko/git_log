@@ -13,7 +13,4 @@ import java.util.Optional;
 public interface PostRepository extends JpaRepository<Post, Long> {
     List<Post> findByAccountOrderByCreatedAtDesc(Account account);
 
-//    @Override
-//    @EntityGraph(attributePaths = {"account"})
-//    Optional<Post> findById(Long id);
 }

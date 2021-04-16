@@ -8,7 +8,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
-@Transactional(readOnly = true)
+@Transactional
 public interface HeartRepository extends JpaRepository<Heart, Long> {
 
     boolean existsByPostAndAccount(Post post, Account account);
