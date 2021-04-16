@@ -16,6 +16,8 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class FileUploadService {
 
+    private static final String URL = "https://seongbinko-naver-bucket.s3.ap-northeast-2.amazonaws.com/";
+
     private final S3Service s3Service;
 
     public String uploadImage(MultipartFile file) {
@@ -42,5 +44,10 @@ public class FileUploadService {
         } catch (StringIndexOutOfBoundsException e) {
             throw new IllegalArgumentException(String.format("잘못된 형식의 파일 (%s) 입니다", fileName));
         }
+    }
+
+    public void removeImage(String imgUrl) {
+        String fileName = imgUrl.substring(URL.length());
+        s3Service.removeFile(fileName);
     }
 }

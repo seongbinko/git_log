@@ -1,7 +1,9 @@
 package com.gitlog.model;
 
 import com.gitlog.dto.PostRequestDto;
+import com.gitlog.dto.PostUpdateRequestDto;
 import lombok.*;
+import org.springframework.util.StringUtils;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -43,9 +45,9 @@ public class Post extends BaseEntity{
         account.getPosts().add(this);
     }
 
-    public void updatePost(PostRequestDto postRequestDto) {
-        this.content = postRequestDto.getContent();
-        this.imgUrl = postRequestDto.getImgUrl();
+    public void updatePost(PostUpdateRequestDto postUpdateRequestDto, String imgUrl) {
+        this.content = StringUtils.hasText(postUpdateRequestDto.getContent()) ? postUpdateRequestDto.getContent() : this.content;
+        this.imgUrl = StringUtils.hasText(imgUrl) ? imgUrl : this.imgUrl;
     }
 
     public void deletePost(Post post) {

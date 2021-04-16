@@ -4,14 +4,11 @@ import lombok.Data;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
 
 @Data
-public class PostRequestDto {
+public class PostUpdateRequestDto {
 
-    @NotBlank
     private String content;
 
-    @NotNull
     private MultipartFile img;
 }

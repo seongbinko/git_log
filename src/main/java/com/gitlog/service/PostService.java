@@ -1,6 +1,7 @@
 package com.gitlog.service;
 
 import com.gitlog.dto.PostRequestDto;
+import com.gitlog.dto.PostUpdateRequestDto;
 import com.gitlog.model.Account;
 import com.gitlog.model.Post;
 import com.gitlog.repository.CommentRepository;
@@ -19,10 +20,10 @@ public class PostService {
     private final CommentRepository commentRepository;
     private final HeartRepository heartRepository;
 
-    public Post savePost(Account account, PostRequestDto postRequestDto) {
+    public Post savePost(Account account, PostRequestDto postRequestDto, String imgUrl) {
         Post post = Post.builder()
                 .content(postRequestDto.getContent())
-                .imgUrl(postRequestDto.getImgUrl())
+                .imgUrl(imgUrl)
                 .build();
         Post newPost = postRepository.save(post);
         newPost.addAccount(account);
@@ -30,8 +31,8 @@ public class PostService {
         return newPost;
     }
 
-    public void updatePost(PostRequestDto postRequestDto, Post post) {
-        post.updatePost(postRequestDto);
+    public void updatePost(Post post, PostUpdateRequestDto postUpdateRequestDto, String imgUrl) {
+        post.updatePost(postUpdateRequestDto, imgUrl);
     }
 
     public void deletePost(Post post) {
@@ -41,4 +42,5 @@ public class PostService {
         heartRepository.deleteAllByPost(post);
         postRepository.delete(post);
     }
+
 }

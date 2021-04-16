@@ -1,16 +1,14 @@
 package com.gitlog.controller;
 
 import com.gitlog.config.UserDetailsImpl;
-import com.gitlog.dto.AccountResponseDto;
-import com.gitlog.dto.CommentResponseDto;
-import com.gitlog.dto.PostRequestDto;
-import com.gitlog.dto.PostResponseDto;
+import com.gitlog.dto.*;
 import com.gitlog.model.Account;
 import com.gitlog.model.Heart;
 import com.gitlog.model.Post;
 import com.gitlog.repository.AccountRepository;
 import com.gitlog.repository.HeartRepository;
 import com.gitlog.repository.PostRepository;
+import com.gitlog.service.FileUploadService;
 import com.gitlog.service.PostService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -34,7 +32,8 @@ public class PostController {
     private final PostRepository postRepository;
     private final PostService postService;
     private final AccountRepository accountRepository;
-    private final HeartRepository heartRepository;
+
+    private final FileUploadService fileUploadService;
 
     // Todo 성능 개선
     @GetMapping("/story/{nickname}")
@@ -112,19 +111,20 @@ public class PostController {
     }
 
     @PostMapping("/api/posts")
-    public ResponseEntity savePost(@AuthenticationPrincipal UserDetailsImpl userDetails, @Valid @RequestBody PostRequestDto postRequestDto, Errors errors) {
+    public ResponseEntity savePost(@AuthenticationPrincipal UserDetailsImpl userDetails, @Valid @ModelAttribute PostRequestDto postRequestDto, Errors errors) {
         if(errors.hasErrors()) {
             return ResponseEntity.badRequest().body(errors.getAllErrors());
         }
         Account account = accountRepository.findByNickname(userDetails.getUsername()).orElse(null);
-        postService.savePost(account, postRequestDto);
+        String imgUrl = fileUploadService.uploadImage(postRequestDto.getImg());
+        postService.savePost(account, postRequestDto, imgUrl);
         return ResponseEntity.ok().build();
     }
 
     @PutMapping("/api/posts/{post_id}")
     public ResponseEntity updatePost(@AuthenticationPrincipal UserDetailsImpl userDetails
             , @PathVariable Long post_id
-            , @Valid @RequestBody PostRequestDto postRequestDto, Errors errors) {
+            , @Valid @ModelAttribute PostUpdateRequestDto postUpdateRequestDto, Errors errors) {
         if(errors.hasErrors()) {
             return ResponseEntity.badRequest().body(errors.getAllErrors());
         }
@@ -132,7 +132,14 @@ public class PostController {
         if(post == null || !userDetails.getUsername().equals(post.getCreatedBy())) {
             return ResponseEntity.badRequest().build(); //Todo 메시지를 전송하는 방식으로
         }
-        postService.updatePost(postRequestDto, post);
+
+        String newImgUrl = null;
+        if(postUpdateRequestDto.getImg() != null) {
+            fileUploadService.removeImage(post.getImgUrl());
+            newImgUrl = fileUploadService.uploadImage(postUpdateRequestDto.getImg());
+        }
+        postService.updatePost(post, postUpdateRequestDto, newImgUrl);
+
         return ResponseEntity.ok().build();
     }
 
@@ -144,6 +151,7 @@ public class PostController {
         if(post == null || !userDetails.getUsername().equals(post.getCreatedBy())) {
             return ResponseEntity.badRequest().build(); //Todo 메시지를 전송하는 방식으로
         }
+        fileUploadService.removeImage(post.getImgUrl());
         postService.deletePost(post);
         return ResponseEntity.ok().build();
     }
