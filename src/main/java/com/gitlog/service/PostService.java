@@ -39,7 +39,6 @@ public class PostService {
     public Page<PostResponseDto> getPost(int page, int size, UserDetailsImpl userDetails){
         PageRequest pageRequest = PageRequest.of(page -1, size , Sort.by(Sort.Direction.DESC, "createdAt"));
         Page<Post> posts = postRepository.findAll(pageRequest);
-        Account account = accountRepository.findByNickname(userDetails.getUsername()).orElse(null);
         Page<PostResponseDto> toMap = posts.map(post -> new PostResponseDto(
                 post.getId(),
                 post.getContent(),
@@ -65,30 +64,56 @@ public class PostService {
 
     //게시글 쓰기
     @Transactional
-    public ResponseEntity createPost(MultipartFile file, String content, Account account)throws IOException {
-        String imgUrl = uploader.upload(file, "static");
-        Post post = Post.builder()
-                .content(content)
-                .imgUrl(imgUrl)
-                .build();
-        Post newPost = postRepository.save(post);
-        newPost.addAccount(account);
-        return new ResponseEntity<>("성공적으로 저장되었습니다", HttpStatus.OK);
-
+    public ResponseEntity<String> createPost(PostRequestDto postRequestDto, Account account)throws IOException {
+        if (postRequestDto.getContent()== null || postRequestDto.getContent().isEmpty()){
+            return new ResponseEntity<>("게시글을 적어주세요",HttpStatus.BAD_REQUEST);
+        }
+        else if ( postRequestDto.getPostImg() == null || postRequestDto.getPostImg().isEmpty() ){
+            return new ResponseEntity<>("이미지를 올려주세요", HttpStatus.OK);
+        }else {
+            String imgUrl = uploader.upload(postRequestDto.getPostImg(), "static");
+            Post post = Post.builder()
+                    .content(postRequestDto.getContent())
+                    .imgUrl(imgUrl)
+                    .build();
+            Post newPost = postRepository.save(post);
+            newPost.addAccount(account);
+            return new ResponseEntity<>("성공적으로 저장되었습니다", HttpStatus.OK);
+        }
     }
     //게시글 수정
     @Transactional
-    public ResponseEntity updatePost(Long post_id, MultipartFile file, String content, UserDetailsImpl userDetails) throws IOException {
-        String imgUrl = uploader.upload(file,"static");
-        Post post = postRepository.findById(post_id).orElse(null);
-        if (post.getAccount().getNickname() != userDetails.getUsername()){
-            return new ResponseEntity<>("다른 사용자의 게시글을 수정할 수 없습니다.",HttpStatus.BAD_REQUEST);
+    public ResponseEntity<String> updatePost(Long post_id, PostRequestDto postRequestDto, UserDetailsImpl userDetails) throws IOException {
+        if (postRequestDto == null){
+            return new ResponseEntity<>("변경하실 게시글이나 사진을 올려주세요", HttpStatus.BAD_REQUEST);
         }
+
+        Post post = postRepository.findById(post_id).orElse(null);
+
         if (post == null){
             return new ResponseEntity<>("해당 게시글은 없는 게시글입니다.", HttpStatus.BAD_REQUEST);
         }
 
-        post.update(imgUrl, content);
+        if (!post.getAccount().getNickname().equals(userDetails.getUsername())){
+            return new ResponseEntity<>("다른 사용자의 게시글을 수정할 수 없습니다.",HttpStatus.BAD_REQUEST);
+        }
+
+        if (postRequestDto.getPostImg() == null || postRequestDto.getPostImg().isEmpty()) {
+            String imgUrl = post.getImgUrl();
+            post.update(postRequestDto, imgUrl);
+        }
+
+        if (postRequestDto.getContent() == null){
+            String content = post.getContent();
+            if (postRequestDto.getPostImg().isEmpty()){
+                String imgUrl = post.getImgUrl();
+                post.update(content, imgUrl);
+            }else {
+                String imgUrl = uploader.upload(postRequestDto.getPostImg(), "static");
+                post.update(content, imgUrl);
+            }
+        }
+
         return new ResponseEntity<>("성공적으로 수정하였습니다", HttpStatus.OK);
     }
     //게시글 삭제

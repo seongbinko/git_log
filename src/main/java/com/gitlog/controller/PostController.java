@@ -11,9 +11,11 @@ import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.validation.Valid;
 import java.io.IOException;
 import java.util.List;
 
@@ -33,15 +35,15 @@ public class PostController {
 
     //게시글 작성
     @PostMapping("/api/posts")
-    public ResponseEntity writePost(@RequestParam("data")MultipartFile file, @RequestParam("content") String content, @AuthenticationPrincipal UserDetailsImpl userDetails) throws IOException {
-        return postService.createPost(file, content, userDetails.getAccount());
+    public ResponseEntity<String> writePost(@ModelAttribute PostRequestDto postRequestDto, @AuthenticationPrincipal UserDetailsImpl userDetails) throws IOException {
+        return postService.createPost(postRequestDto, userDetails.getAccount());
     }
 
-//    //게시글 수정
-//    @PutMapping("/api/posts/{post_id}")
-//    public ResponseEntity updatePost(@AuthenticationPrincipal UserDetailsImpl userDetails, @PathVariable Long post_id,  ) throws IOException {
-//        return postService.updatePost(post_id, file, content, userDetails);
-//    }
+    //게시글 수정
+    @PutMapping("/api/posts/{post_id}")
+    public ResponseEntity<String> updatePost(@AuthenticationPrincipal UserDetailsImpl userDetails, @PathVariable Long post_id, @ModelAttribute PostRequestDto postRequestDto) throws IOException {
+        return postService.updatePost(post_id, postRequestDto, userDetails);
+    }
     //게시글 삭제
     @DeleteMapping("/api/posts/{post_id}")
     public void deletePost(@PathVariable Long post_id) {

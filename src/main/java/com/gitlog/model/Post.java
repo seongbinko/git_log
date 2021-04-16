@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.gitlog.config.UserDetailsImpl;
 import com.gitlog.dto.PostRequestDto;
 import lombok.*;
+import org.springframework.util.StringUtils;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -46,7 +47,11 @@ public class Post extends BaseEntity{
         this.account = account;
     }
 
-    public void update(String imgUrl, String content){
+    public void update(PostRequestDto postRequestDto, String imgUrl){
+        this.content = postRequestDto.getContent();
+        this.imgUrl = imgUrl;
+    }
+    public void update(String content, String imgUrl){
         this.content = content;
         this.imgUrl = imgUrl;
     }
