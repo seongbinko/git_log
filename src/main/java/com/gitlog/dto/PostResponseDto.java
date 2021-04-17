@@ -31,24 +31,6 @@ public class PostResponseDto {
 
     public PostResponseDto() {}
 
-    public PostResponseDto(Long id, String content, String imgUrl, String createdBy) {
-        this.id = id;
-        this.content = content;
-        this.imgUrl = imgUrl;
-        this.createdBy = createdBy;
-    }
-
-    public PostResponseDto(Long id, String content, String imgUrl, LocalDateTime createdAt, String createdBy, LocalDateTime modifiedAt, List<CommentResponseDto> comments, AccountResponseDto accountResponseDto) {
-        this.id = id;
-        this.content = content;
-        this.imgUrl = imgUrl;
-        this.createdAt = createdAt;
-        this.createdBy = createdBy;
-        this.modifiedAt = modifiedAt;
-        this.comments = comments;
-        this.accountResponseDto = accountResponseDto;
-    }
-
     public PostResponseDto(Long id, String content, String imgUrl, LocalDateTime createdAt, String createdBy, LocalDateTime modifiedAt, List<CommentResponseDto> comments, AccountResponseDto accountResponseDto, int commentCnt, int heartCnt) {
         this.id = id;
         this.content = content;

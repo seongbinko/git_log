@@ -63,7 +63,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .and()
                 .authorizeRequests() // 요청에 대한 사용권한 체크
                 .antMatchers("/h2-console/**").permitAll()
-                .antMatchers("/api/books/**").authenticated()
                 .antMatchers(HttpMethod.POST, "/api/posts/**").authenticated()
                 .antMatchers(HttpMethod.PUT, "/api/posts/**").authenticated()
                 .antMatchers(HttpMethod.DELETE, "/api/posts/**").authenticated()
