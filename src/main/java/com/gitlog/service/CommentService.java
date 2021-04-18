@@ -13,7 +13,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
+import javax.transaction.Transactional;
 
 @RequiredArgsConstructor
 @Service
@@ -23,19 +23,23 @@ public class CommentService {
     private final AccountRepository accountRepository;
 
 
-    public ResponseEntity<String> writeComment(Long post_id, CommentRequestDto commentRequestDto, Account account){
+    @Transactional
+    public ResponseEntity<String> writeComment(Long post_id, CommentRequestDto commentRequestDto, UserDetailsImpl userDetails){
         Post post = postRepository.findById(post_id).orElse(null);
+        Account account = accountRepository.findByNickname(userDetails.getUsername()).orElse(null);
         if (post == null){
             return new ResponseEntity<>("해당 게시글을 찾을 수 없습니다.", HttpStatus.BAD_REQUEST);
         }
-        Comment comment = Comment.builder().content(commentRequestDto.getContent())
-                .post(post)
-                .account(account)
+        System.out.println(commentRequestDto.getContent());
+        Comment comment = Comment.builder()
+                .content(commentRequestDto.getContent())
                 .build();
         Comment newComment = commentRepository.save(comment);
+        newComment.addPostAndAccount(post, account);
         return new ResponseEntity<>("댓글 작성 완료", HttpStatus.OK);
     }
 
+    @Transactional
     public ResponseEntity<String> updateComment(Long post_id, Long comment_id, CommentRequestDto commentRequestDto, Account account){
         Post post = postRepository.findById(post_id).orElse(null);
         if (commentRequestDto.getContent() == null || commentRequestDto.getContent().isEmpty()){
@@ -55,6 +59,7 @@ public class CommentService {
         return new ResponseEntity<>("성공적으로 수정 하였습니다.",HttpStatus.OK);
     }
 
+    @Transactional
     public ResponseEntity<String> deleteComment(Long post_id, Long comment_id, Account account){
         Post post = postRepository.findById(post_id).orElse(null);
         if (post == null){
@@ -67,6 +72,7 @@ public class CommentService {
         if (!comment.getAccount().getNickname().equals(account.getNickname())){
             return new ResponseEntity<>("다른 사용자의 댓글을 삭제하실 수 없습니다.",HttpStatus.BAD_REQUEST);
         }
+        comment.removePostAndAccount(post, account);
         commentRepository.deleteById(comment_id);
         return new ResponseEntity<>("성공적으로 삭제 하였습니다.", HttpStatus.OK);
     }

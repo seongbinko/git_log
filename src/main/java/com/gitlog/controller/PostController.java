@@ -46,7 +46,12 @@ public class PostController {
     }
     //게시글 삭제
     @DeleteMapping("/api/posts/{post_id}")
-    public ResponseEntity<String> deletePost(@PathVariable Long post_id) {
-        return postService.deletePost(post_id);
+    public ResponseEntity<String> deletePost(@PathVariable Long post_id, @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        return postService.deletePost(post_id, userDetails.getAccount());
+    }
+    //사용자 포스트만 가져오기
+    @GetMapping("/story/{nickname}")
+    public ResponseEntity userStory(@PathVariable String nickname){
+        return postService.userStory(nickname);
     }
 }

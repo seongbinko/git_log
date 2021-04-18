@@ -32,8 +32,22 @@ public class Comment extends BaseEntity{
 //    @JsonIgnore
     private Post post;
 
+    public void addPostAndAccount(Post post, Account account){
+        this.post = post;
+        this.account = account;
+        post.getComments().add(this);
+        account.getComments().add(this);
+    }
+
     public void updateComment(String content){
         this.content = content;
+    }
+
+    public void removePostAndAccount(Post post, Account account){
+        post.getComments().remove(this);
+        account.getComments().remove(this);
+        this.post = null;
+        this.account = null;
     }
 
 }

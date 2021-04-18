@@ -55,4 +55,12 @@ public class Post extends BaseEntity{
         this.content = content;
         this.imgUrl = imgUrl;
     }
+    public void deletePost(Post post){
+        post.getAccount().getPosts().remove(this);
+        post.getComments().removeAll(this.comments);
+        post.getHearts().removeAll(this.hearts);
+        this.account = null;
+        this.comments.clear();
+        this.hearts.clear();
+    }
 }

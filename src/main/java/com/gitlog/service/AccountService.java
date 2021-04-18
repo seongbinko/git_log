@@ -71,9 +71,8 @@ public class AccountService {
             String profileImgUrl;
             if (profileRequestDto.getProfileImg() == null) {
                 profileImgUrl = account.getProfileImgUrl();
-            }else {
-                profileImgUrl = uploader.upload(profileRequestDto.getProfileImg(), "static");
             }
+            profileImgUrl = uploader.upload(profileRequestDto.getProfileImg(), "static");
             account.update(profileRequestDto, profileImgUrl);
             return new ResponseEntity<>("수정 완료 하였습니다", HttpStatus.OK);
 

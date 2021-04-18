@@ -13,7 +13,8 @@ import javax.persistence.MappedSuperclass;
 @MappedSuperclass
 @Getter
 public abstract class BaseEntity extends BaseTimeEntity{
-
+    //createdBy를 사용하려면 CurrentAuditor의 정보를 SecurityContext 에서 가져와서 주입시켜야 한다.
+    //이 프로젝트 같은 경우, app.java 에 설정되어 있다.
     @CreatedBy
     @Column(updatable = false)
     private String createdBy;

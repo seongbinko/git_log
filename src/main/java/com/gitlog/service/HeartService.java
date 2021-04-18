@@ -46,6 +46,7 @@ public class HeartService {
             return new ResponseEntity<>("잘못된 요청입니다.", HttpStatus.BAD_REQUEST);
         }
         Heart heart = heartRepository.findByPostAndAccount(post, account);
+        heart.cancelHeart(post, account);
         heartRepository.delete(heart);
         return new ResponseEntity<>("좋아요를 취소 하였습니다.", HttpStatus.OK);
     }
