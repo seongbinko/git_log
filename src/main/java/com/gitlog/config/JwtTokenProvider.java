@@ -10,6 +10,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Component;
+import org.springframework.util.StringUtils;
 
 import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpServletRequest;
@@ -41,7 +42,7 @@ public class JwtTokenProvider {
     public String createToken(String nickname, String profileImgUrl, List<String> roles) {
         Claims claims = Jwts.claims(); // JWT payload 에 저장되는 정보단위
         claims.put("nickname", nickname);
-        claims.put("profileImgUrl", profileImgUrl);
+        claims.put("profileImgUrl", StringUtils.hasText(profileImgUrl) ? profileImgUrl : "");
         // claims.put("roles", roles); // 정보는 key / value 쌍으로 저장된다.
         Date now = new Date();
         return Jwts.builder()
