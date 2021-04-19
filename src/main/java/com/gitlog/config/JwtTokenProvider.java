@@ -9,13 +9,17 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.oauth2.common.exceptions.InvalidTokenException;
 import org.springframework.stereotype.Component;
+import org.springframework.util.StringUtils;
 
 import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpServletRequest;
 import java.util.Base64;
 import java.util.Date;
 import java.util.List;
+import java.util.regex.Pattern;
+import java.util.regex.PatternSyntaxException;
 
 @RequiredArgsConstructor
 @Component
@@ -60,8 +64,16 @@ public class JwtTokenProvider {
     }
 
     // Request의 Header에서 token 값을 가져옵니다. "Authorization" : "TOKEN값'
-    public String resolveToken(HttpServletRequest request) {
-        return request.getHeader("Authorization");
+    public String resolveToken(HttpServletRequest request){
+        String token = request.getHeader("Authorization");
+        if (StringUtils.hasText(token)) {
+            if (Pattern.matches("^Bearer.*", token)) {
+                System.out.println("yes");
+                token = token.replaceAll("^Bearer( )*", "");
+                return token;
+            }
+        }
+        return token;
     }
 
     // 토큰의 유효성 + 만료일자 확인
