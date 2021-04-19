@@ -38,9 +38,11 @@ public class JwtTokenProvider {
     }
 
     // JWT 토큰 생성
-    public String createToken(String userPk, List<String> roles) {
-        Claims claims = Jwts.claims().setSubject(userPk); // JWT payload 에 저장되는 정보단위
-        claims.put("roles", roles); // 정보는 key / value 쌍으로 저장된다.
+    public String createToken(String nickname, String profileImgUrl, List<String> roles) {
+        Claims claims = Jwts.claims(); // JWT payload 에 저장되는 정보단위
+        claims.put("nickname", nickname);
+        claims.put("profileImgUrl", profileImgUrl);
+        // claims.put("roles", roles); // 정보는 key / value 쌍으로 저장된다.
         Date now = new Date();
         return Jwts.builder()
                 .setClaims(claims) // 데이터 정보정보 저장

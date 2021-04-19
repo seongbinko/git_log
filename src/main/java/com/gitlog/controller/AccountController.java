@@ -91,7 +91,7 @@ public class AccountController {
         }
         Account account = accountRepository.findByNickname(loginRequestDto.getNickname()).orElse(null);
         JsonObject obj = new JsonObject();
-        obj.addProperty("token", jwtTokenProvider.createToken(account.getNickname(), account.getRoles()));
+        obj.addProperty("token", jwtTokenProvider.createToken(account.getNickname(), account.getProfileImgUrl(), account.getRoles()));
         return ResponseEntity.ok().body(obj.toString());
     }
 
