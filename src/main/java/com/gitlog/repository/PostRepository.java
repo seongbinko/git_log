@@ -1,16 +1,16 @@
 package com.gitlog.repository;
 
 import com.gitlog.model.Account;
+import com.gitlog.model.Post;
+import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Optional;
 
 @Transactional(readOnly = true)
-public interface AccountRepository extends JpaRepository<Account, Long> {
-    Optional<Account> findByNickname(String nickname);
+public interface PostRepository extends JpaRepository<Post, Long> {
+    List<Post> findByAccountOrderByCreatedAtDesc(Account account);
 
-    boolean existsByNickname(String nickname);
-
-    boolean existsByEmail(String email);
 }

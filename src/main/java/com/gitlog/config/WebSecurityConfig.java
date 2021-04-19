@@ -19,23 +19,24 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 @Configuration
 @RequiredArgsConstructor
 @EnableWebSecurity // 스프링 Security 지원을 가능하게 함 Spring Security Filter Chain 을 사용한다는 것
+//@EnableGlobalMethodSecurity(securedEnabled = true)
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
-    //private final JwtTokenProvider jwtTokenProvider;
+    private final JwtTokenProvider jwtTokenProvider;
 
-    @Bean
+    @Bean // 패스워드 인코딩
     public BCryptPasswordEncoder encodePassword(){
         return new BCryptPasswordEncoder();
     }
 
 
-    /*    AuthenticationManager 를 이용하여, 원하는 시점에 로그인이 될 수 있도록 바꿔보자.
-        먼저, AuthenticationManager 를 외부에서 사용 하기 위해, AuthenticationManagerBean 을 이용하여 Sprint Securtiy 밖으로 AuthenticationManager 빼 내야 한다.*/
-//    @Bean
-//    @Override
-//    public AuthenticationManager authenticationManagerBean() throws Exception {
-//        return super.authenticationManagerBean();
-//    }
+/*    AuthenticationManager 를 이용하여, 원하는 시점에 로그인이 될 수 있도록 바꿔보자.
+    먼저, AuthenticationManager 를 외부에서 사용 하기 위해, AuthenticationManagerBean 을 이용하여 Sprint Securtiy 밖으로 AuthenticationManager 빼 내야 한다.*/
+    @Bean
+    @Override
+    public AuthenticationManager authenticationManagerBean() throws Exception {
+        return super.authenticationManagerBean();
+    }
 
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
@@ -55,21 +56,18 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         http.cors().configurationSource(corsConfigurationSource()); // http.cors().configurationSource(request -> new CorsConfiguration().applyPermitDefaultValues());
         http
-                .httpBasic().disable()
+                .httpBasic().disable() // rest api 만을 고려하여 기본 설정은 해제하겠습니다.
                 .headers().frameOptions().disable().and()
-                .csrf().disable()
-                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                .csrf().disable() // csrf 보안 토큰 disable처리.
+                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS) // 토큰 기반 인증이므로 세션 역시 사용하지 않습니다.
                 .and()
-                .authorizeRequests()
+                .authorizeRequests() // 요청에 대한 사용권한 체크
                 .antMatchers("/h2-console/**").permitAll()
-//                .antMatchers(HttpMethod.POST, "/api/books/**").authenticated()
-//                .antMatchers(HttpMethod.PUT, "/api/books/**").authenticated()
-//                .antMatchers(HttpMethod.DELETE, "/api/books/**").authenticated()
-                .anyRequest().permitAll();
-//                .and()
-//                .addFilterBefore(new JwtAutenticationFilter(jwtTokenProvider), UsernamePasswordAuthenticationFilter.class);
-//                .antMatchers("/api/books").hasRole("USER")
+                .antMatchers(HttpMethod.POST, "/api/posts/**").authenticated()
+                .antMatchers(HttpMethod.PUT, "/api/posts/**").authenticated()
+                .antMatchers(HttpMethod.DELETE, "/api/posts/**").authenticated()
+                .anyRequest().permitAll() // 그외 나머지 요청은 누구나 접근 가능
+                .and()
+                .addFilterBefore(new JwtAutenticationFilter(jwtTokenProvider), UsernamePasswordAuthenticationFilter.class);
     }
-
-
 }
