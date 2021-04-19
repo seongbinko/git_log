@@ -98,7 +98,7 @@ public class AccountController {
             return ResponseEntity.badRequest().body(errors.getFieldError().getDefaultMessage());
         }
         Account account = accountService.login(loginRequestDto);
-        return ResponseEntity.ok().body(jwtTokenProvider.createToken(account.getNickname(), account.getRoles()));
+        return ResponseEntity.ok().body(jwtTokenProvider.createToken(account.getNickname(), account.getProfileImgUrl(), account.getRoles()));
     }
 
 
