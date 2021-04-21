@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
 
 import java.util.Collections;
 
@@ -33,7 +34,9 @@ public class AccountService {
         );
     }
     public void uploadProfile(ProfileRequestDto profileRequestDto, String profileImgUrl, Account account) {
-        profileRequestDto.setPassword(passwordEncoder.encode(profileRequestDto.getPassword()));
+        if (StringUtils.hasText(profileRequestDto.getPassword())) {
+            profileRequestDto.setPassword(passwordEncoder.encode(profileRequestDto.getPassword()));
+        }
         account.updateProfile(profileRequestDto, profileImgUrl);
     }
 }
