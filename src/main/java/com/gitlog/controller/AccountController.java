@@ -109,7 +109,10 @@ public class AccountController {
             }
             profileImgUrl = fileUploadService.uploadImage(profileRequestDto.getProfileImg());
         }
-        accountService.uploadProfile(profileRequestDto, profileImgUrl, account);
-        return ResponseEntity.ok().build();
+        String updateProfileImgUrl = accountService.uploadProfile(profileRequestDto, profileImgUrl, account);
+
+        JsonObject obj = new JsonObject();
+        obj.addProperty("profileImgUrl", updateProfileImgUrl);
+        return ResponseEntity.ok().body(obj.toString());
     }
 }

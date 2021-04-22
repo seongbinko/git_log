@@ -33,10 +33,11 @@ public class AccountService {
                         .build()
         );
     }
-    public void uploadProfile(ProfileRequestDto profileRequestDto, String profileImgUrl, Account account) {
+    public String uploadProfile(ProfileRequestDto profileRequestDto, String profileImgUrl, Account account) {
         if (StringUtils.hasText(profileRequestDto.getPassword())) {
             profileRequestDto.setPassword(passwordEncoder.encode(profileRequestDto.getPassword()));
         }
         account.updateProfile(profileRequestDto, profileImgUrl);
+        return profileImgUrl;
     }
 }
